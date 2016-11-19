@@ -1,0 +1,96 @@
+﻿CREATE TABLE IF NOT EXISTS `svp_ServerPld`
+(
+	`Id` INTEGER PRIMARY KEY AUTOINCREMENT,
+	`Key` TEXT NOT NULL,
+	`Value` TEXT
+);
+
+CREATE TABLE IF NOT EXISTS [svp_FileMappingInfo]
+(
+	[Id] INTEGER PRIMARY KEY AUTOINCREMENT,
+	[AclHash] TEXT NOT NULL,
+	[MappingFilePath] TEXT DEFAULT NULL,
+	[Mimetype] TEXT,
+	[LostFileFlag] INTEGER NOT NULL DEFAULT FALSE,
+	[Workspace_Id] INTEGER NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS [svp_Workspace]
+(
+	[Id] INTEGER PRIMARY KEY AUTOINCREMENT,
+	[Name] TEXT NOT NULL UNIQUE,
+	[PhysicalSpacePath] TEXT NOT NULL UNIQUE,
+	[VirtualSpacePath] TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS [svp_Content]
+(
+	[Id] INTEGER PRIMARY KEY AUTOINCREMENT,
+	[Title] TEXT NOT NULL,
+	[IdentifyKey] TEXT NOT NULL,
+	[ContentHash] TEXT,
+	[Caption] TEXT,
+	[Comment] TEXT,
+	[CreateDate] DATE,
+	[LastUpDate] DATE,
+	[AttachCategoryDate] DATE,
+	[ThumbnailHash] TEXT
+);
+
+CREATE TABLE IF NOT EXISTS [svp_Content_Image]
+(
+	[Id] INTEGER PRIMARY KEY AUTOINCREMENT
+);
+
+CREATE TABLE IF NOT EXISTS [svp_Content_Misc]
+(
+	[Id] INTEGER PRIMARY KEY AUTOINCREMENT
+);
+
+CREATE TABLE IF NOT EXISTS [svp_Category]
+(
+	[Id] INTEGER PRIMARY KEY AUTOINCREMENT,
+	[Name] TEXT NOT NULL,
+	[Memo] TEXT,
+	[Comment] TEXT,
+	[CreateDate] DATE,
+	[LastUpDate] DATE,
+	[SortType] INT NOT NULL DEFAULT 0,
+	[OrderType] INT NOT NULL DEFAULT 0,
+	[LastSelectedContent_Id] INT,
+	[ParentCategory_Id] INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS [svp_Tag]
+(
+	[Id] INTEGER PRIMARY KEY AUTOINCREMENT,
+	[Name] TEXT NOT NULL,
+	[Comment] TEXT,
+	[CreateDate] DATE,
+	[LastUpDate] DATE,
+	[ParentTag_Id] INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS [svp_Label]
+(
+	[Id] INTEGER PRIMARY KEY AUTOINCREMENT,
+	[Name] TEXT NOT NULL,
+	[Comment] TEXT,
+	[CreateDate] DATE,
+	[LastUpDate] DATE,
+	[ParentLabel_Id] INTEGER
+);
+
+--
+-- TABLE MODIFY
+-- 
+
+ALTER TABLE [svp_Content] ADD [Starrating] INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE [svp_Content] ADD [UnsetStarratingFlag] INTEGER NOT NULL DEFAULT TRUE;
+ALTER TABLE [svp_Content] ADD [ArchiveFlag] INTEGER NOT NULL DEFAULT FALSE;
+ALTER TABLE [svp_Content] ADD [ReadableFlag] INTEGER NOT NULL DEFAULT FALSE;
+
+--
+-- Initialize Data
+--
+INSERT INTO [svp_Category] (Id, Name) VALUES (1, "ROOT");
