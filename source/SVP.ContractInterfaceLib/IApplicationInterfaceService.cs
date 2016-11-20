@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SVP.CIL.Request;
+using SVP.CIL.Response;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
@@ -17,6 +19,14 @@ namespace SVP.CIL.Service
 
 		#region メソッド
 
+		[OperationContract]
+		ResponseCategoryCrud CategoryCrud(RequestCategoryCrud reqparam);
+
+		
+		[OperationContract]
+		ResponseCategoryLoadList CategoryLoadList(RequestCategoryLoadList reqparam);
+		
+
 		[OperationContract(IsInitiating = true, IsTerminating = false)]
 		void Login();
 
@@ -24,5 +34,6 @@ namespace SVP.CIL.Service
 		void Logout();
 
 		#endregion メソッド
+
 	}
 }

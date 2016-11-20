@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using log4net;
+using Nadesico.Model;
 using SVP.CIL.Service;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,12 @@ using System.Linq;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
+using SVP.CIL.Request;
+using SVP.CIL.Response;
+using Nadesico.Gateway;
+using Nadesico.Model.Repository;
+using System.Data.Entity.Validation;
+using System.Collections;
 
 namespace Nadesico.Service
 {
@@ -31,7 +38,9 @@ namespace Nadesico.Service
 			// マッピングするクラスの紐付け設定
 			MapperConfig = new MapperConfiguration(cfg =>
 			{
-				//cfg.CreateMap<Content, SVP.CIL.Domain.Conrent>();
+				cfg.CreateMap<Category, SVP.CIL.Domain.Category>()
+				.ReverseMap()
+				;
 			});
 
 			Mapper = MapperConfig.CreateMapper();
@@ -42,6 +51,87 @@ namespace Nadesico.Service
 
 		#region メソッド
 
+		public ResponseCategoryCrud CategoryCrud(RequestCategoryCrud reqparam)
+		{
+			var resp = new ResponseCategoryCrud();
+			try
+			{
+				using (var dbc = new AppDbContext())
+				{
+					switch (reqparam.Crud)
+					{
+						case CrudType.CREATE:
+							resp.Data = CategoryCreate(dbc, reqparam.Target);
+							resp.Success = true;
+							break;
+						case CrudType.DELETE:
+							resp.Success = CategoryDelete(dbc, reqparam.Target);
+							break;
+						case CrudType.READ:
+							resp.Data = CategoryRead(dbc,reqparam.Target);
+							resp.Success = true;
+							break;
+						case CrudType.UPDATE:
+							resp.Data = CategoryUpdate(dbc, reqparam.Target);
+							resp.Success = true;
+							break;
+					}
+				}
+			}
+			catch (DbEntityValidationException dbEx)
+			{
+				foreach (DbEntityValidationResult entityErr in dbEx.EntityValidationErrors)
+				{
+					foreach (DbValidationError error in entityErr.ValidationErrors)
+					{
+						Console.WriteLine("Error Property Name {0} : Error Message: {1}",
+											error.PropertyName, error.ErrorMessage);
+						resp.Success = false;
+					}
+				}
+			}
+
+
+			return resp;
+		}
+
+		public ResponseCategoryLoadList CategoryLoadList(RequestCategoryLoadList reqparam)
+		{
+			var resp = new ResponseCategoryLoadList();
+
+			try
+			{
+				using (var dbc = new AppDbContext())
+				{
+					var repo = new CategoryRepository(dbc);
+					var category = repo.Load(reqparam.ParentTarget.Id);
+					resp.Datas = new List<SVP.CIL.Domain.Category>();
+
+					foreach (var c in category.ChildCategories)
+					{
+						var domainCategory = Mapper.Map<SVP.CIL.Domain.Category>(c);
+						resp.Datas.Add(domainCategory);
+					}
+
+					resp.Success = true;
+				}
+			}
+			catch (DbEntityValidationException dbEx)
+			{
+				foreach (DbEntityValidationResult entityErr in dbEx.EntityValidationErrors)
+				{
+					foreach (DbValidationError error in entityErr.ValidationErrors)
+					{
+						Console.WriteLine("Error Property Name {0} : Error Message: {1}",
+											error.PropertyName, error.ErrorMessage);
+						resp.Success = false;
+					}
+				}
+			}
+
+			return resp;
+		}
+
 		public void Login()
 		{
 			LOG.Debug("Execute API Login");
@@ -50,6 +140,43 @@ namespace Nadesico.Service
 		public void Logout()
 		{
 			LOG.Debug("Execute API Logout");
+		}
+
+		private SVP.CIL.Domain.Category CategoryCreate(AppDbContext dbc, SVP.CIL.Domain.Category target)
+		{
+			var category = Mapper.Map<Category>(target);
+			var repo = new CategoryRepository(dbc);
+			repo.Add(category);
+			dbc.SaveChanges();
+			var domainCategory = Mapper.Map<SVP.CIL.Domain.Category>(category);
+			return domainCategory;
+		}
+
+		private bool CategoryDelete(AppDbContext dbc, SVP.CIL.Domain.Category target)
+		{
+			var repo = new CategoryRepository(dbc);
+			var category = repo.Load(target.Id);
+			repo.Delete(category);
+			dbc.SaveChanges();
+			return true;
+		}
+
+		private SVP.CIL.Domain.Category CategoryRead(AppDbContext dbc, SVP.CIL.Domain.Category target)
+		{
+			var repo = new CategoryRepository(dbc);
+			var category = repo.Load(target.Id);
+			var domainCategory = Mapper.Map<SVP.CIL.Domain.Category>(category);
+			return domainCategory;
+		}
+		private SVP.CIL.Domain.Category CategoryUpdate(AppDbContext dbc, SVP.CIL.Domain.Category target)
+		{
+			var repo = new CategoryRepository(dbc);
+			var category = repo.Load(target.Id);
+			Mapper.Map<SVP.CIL.Domain.Category, Category>(target, category);
+			repo.Save();
+			dbc.SaveChanges();
+			var domainCategory = Mapper.Map<SVP.CIL.Domain.Category>(category);
+			return domainCategory;
 		}
 
 		#endregion メソッド

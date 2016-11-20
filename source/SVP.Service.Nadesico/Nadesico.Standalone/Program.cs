@@ -1,4 +1,5 @@
-﻿using Nadesico.Core;
+﻿using AutoMapper;
+using Nadesico.Core;
 using Nadesico.Gateway;
 using Nadesico.Model;
 using Nadesico.Model.Repository;
@@ -127,6 +128,7 @@ namespace Nadesico.Standalone
 
 		private static void RunClientTB1()
 		{
+			bool bContinue = true;
 			string command = "";
 
 			IApplicationInterfaceService proxy = WcfClientProxy.Create<IApplicationInterfaceService>(c =>
@@ -134,7 +136,7 @@ namespace Nadesico.Standalone
 					c.SetEndpoint("netNamedPipeBinding_SvpApi");
 				});
 
-			while (1 == 1)
+			while (bContinue)
 			{
 				Console.WriteLine("コマンドを入力してください");
 				Console.Write("> ");
@@ -145,6 +147,70 @@ namespace Nadesico.Standalone
 					case "login":
 						proxy.Login();
 						Console.WriteLine("Loginコマンドを実行しました");
+						break;
+					case "cc1":
+						var newCategory = new SVP.CIL.Domain.Category
+						{
+							Name = "新規カテゴリ",
+							Comment = "コメントです"
+						};
+						var rsp_cc1 = proxy.CategoryCrud(new SVP.CIL.Request.RequestCategoryCrud
+						{
+							Crud = SVP.CIL.Request.CrudType.CREATE,
+							Target = newCategory
+						});
+						Console.WriteLine("カテゴリ({0})を作成しました。", rsp_cc1.Data.Id);
+						break;
+					case "cd1":
+						Console.Write("削除ID:");
+						string deleteId = Console.ReadLine();
+						var rsp_cd1 = proxy.CategoryCrud(new SVP.CIL.Request.RequestCategoryCrud
+						{
+							Crud = SVP.CIL.Request.CrudType.DELETE,
+							Target = new SVP.CIL.Domain.Category { Id = long.Parse(deleteId) }
+						});
+						if(rsp_cd1.Success)
+							Console.WriteLine("削除しました");
+						else
+							Console.WriteLine("削除できませんでした");
+						break;
+					case "cu1":
+						var rsp_cu1_1 = proxy.CategoryCrud(new SVP.CIL.Request.RequestCategoryCrud
+						{
+							Crud = SVP.CIL.Request.CrudType.READ,
+							Target = new SVP.CIL.Domain.Category { Id = 2L }
+						});
+
+						var updatedDomainCategory = rsp_cu1_1.Data;
+						Console.Write("新しいタイトル名:");
+						string newTitle = Console.ReadLine();
+						updatedDomainCategory.Name = newTitle;
+						var rsp_cu1 = proxy.CategoryCrud(new SVP.CIL.Request.RequestCategoryCrud
+						{
+							Crud = SVP.CIL.Request.CrudType.UPDATE,
+							Target = updatedDomainCategory
+						});
+						break;
+					case "clist1":
+						var rsp_clist1 = proxy.CategoryLoadList(new SVP.CIL.Request.RequestCategoryLoadList
+						{
+							ParentTarget = new SVP.CIL.Domain.Category { Id = 10L }
+						});
+
+						if (rsp_clist1.Success)
+						{
+							foreach (var item in rsp_clist1.Datas)
+							{
+								Console.WriteLine("ID:{0} Name:{1}", item.Id, item.Name);
+							}
+						}
+						else
+						{
+							Console.WriteLine("API実行に失敗しました");
+						}
+						break;
+					case "e":
+						bContinue = false;
 						break;
 				}
 			}
