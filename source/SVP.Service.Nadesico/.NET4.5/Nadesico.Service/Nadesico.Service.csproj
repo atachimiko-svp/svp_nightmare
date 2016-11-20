@@ -112,6 +112,10 @@
       <Project>{c47dc9ab-5f93-4282-abfe-b1648840087c}</Project>
       <Name>SVP.CommonLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\SVP.ContractInterfaceLib\SVP.ContractInterfaceLib.csproj">
+      <Project>{530e1a0b-e9db-4158-b072-257b6e1c29b0}</Project>
+      <Name>SVP.ContractInterfaceLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Nadesico.Activity\Nadesico.Activity.csproj">
       <Project>{7641c805-bc00-4e6c-98dd-21e7b7cc7683}</Project>
       <Name>Nadesico.Activity</Name>

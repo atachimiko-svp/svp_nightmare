@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Akalib.Entity", "..\Contrib
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SVP.CommonLib", "..\SVP.CommonLib\SVP.CommonLib\SVP.CommonLib.csproj", "{C47DC9AB-5F93-4282-ABFE-B1648840087C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SVP.ContractInterfaceLib", "..\SVP.ContractInterfaceLib\SVP.ContractInterfaceLib.csproj", "{530E1A0B-E9DB-4158-B072-257B6E1C29B0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -97,6 +99,10 @@ Global
 		{C47DC9AB-5F93-4282-ABFE-B1648840087C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C47DC9AB-5F93-4282-ABFE-B1648840087C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C47DC9AB-5F93-4282-ABFE-B1648840087C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{530E1A0B-E9DB-4158-B072-257B6E1C29B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{530E1A0B-E9DB-4158-B072-257B6E1C29B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{530E1A0B-E9DB-4158-B072-257B6E1C29B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{530E1A0B-E9DB-4158-B072-257B6E1C29B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -115,5 +121,6 @@ Global
 		{AC9A53E6-25C0-4465-8F91-671DE8D9573E} = {50A4293C-2EC1-416B-AFB3-EAA36B45A876}
 		{756953CE-A786-4A28-ADD8-6E744633C904} = {50A4293C-2EC1-416B-AFB3-EAA36B45A876}
 		{C47DC9AB-5F93-4282-ABFE-B1648840087C} = {50A4293C-2EC1-416B-AFB3-EAA36B45A876}
+		{530E1A0B-E9DB-4158-B072-257B6E1C29B0} = {50A4293C-2EC1-416B-AFB3-EAA36B45A876}
 	EndGlobalSection
 EndGlobal
