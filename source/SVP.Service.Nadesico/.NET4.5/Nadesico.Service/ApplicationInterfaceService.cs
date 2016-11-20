@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using log4net;
+using SVP.CIL.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +17,7 @@ namespace Nadesico.Service
 
 		#region フィールド
 
+		static ILog LOG = LogManager.GetLogger(typeof(ApplicationInterfaceService));
 		static IMapper Mapper;
 		static MapperConfiguration MapperConfig;
 
@@ -41,12 +44,12 @@ namespace Nadesico.Service
 
 		public void Login()
 		{
-			throw new NotImplementedException();
+			LOG.Debug("Execute API Login");
 		}
 
 		public void Logout()
 		{
-			throw new NotImplementedException();
+			LOG.Debug("Execute API Logout");
 		}
 
 		#endregion メソッド

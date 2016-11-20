@@ -3,6 +3,7 @@ using Nadesico.Gateway;
 using Nadesico.Model;
 using Nadesico.Model.Repository;
 using Nadesico.Service;
+using SVP.CIL.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ using System.ServiceModel.Description;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using WcfClientProxyGenerator;
 
 namespace Nadesico.Standalone
 {
@@ -35,6 +37,7 @@ namespace Nadesico.Standalone
 			Console.WriteLine("   cat1   : カテゴリ機能モード1");
 			Console.WriteLine("   ctm1   : コンテンツ機能モード1");
 			Console.WriteLine("   srv1   : サーバ起動1");
+			Console.WriteLine("   cli1   : クライアント起動1");
 			Console.WriteLine("   e      : 終了");
 
 			Console.Write("> ");
@@ -53,6 +56,9 @@ namespace Nadesico.Standalone
 					break;
 				case "srv1":
 					RunServiceTB1();
+					break;
+				case "cli1":
+					RunClientTB1();
 					break;
 				case "e":
 					break;
@@ -116,6 +122,31 @@ namespace Nadesico.Standalone
 				var catChild = repoCategory.Load(id_child);
 
 				Console.WriteLine("子階層カテゴリの親カテゴリ({0})を確認", catChild.ParentCategory.Id);
+			}
+		}
+
+		private static void RunClientTB1()
+		{
+			string command = "";
+
+			IApplicationInterfaceService proxy = WcfClientProxy.Create<IApplicationInterfaceService>(c =>
+				{
+					c.SetEndpoint("netNamedPipeBinding_SvpApi");
+				});
+
+			while (1 == 1)
+			{
+				Console.WriteLine("コマンドを入力してください");
+				Console.Write("> ");
+				command = Console.ReadLine();
+
+				switch (command)
+				{
+					case "login":
+						proxy.Login();
+						Console.WriteLine("Loginコマンドを実行しました");
+						break;
+				}
 			}
 		}
 
@@ -195,7 +226,7 @@ namespace Nadesico.Standalone
 			ApplicationContext.SetupApplicationContextImpl(ApplicationContextImpl.CreateInstance(application, buildAssemblyType));
 			((ApplicationContextImpl)ApplicationContextImpl.GetInstance()).InitializeApplication();
 
-			using (ServiceHost host = new ServiceHost(typeof(IApplicationInterfaceService)))
+			using (ServiceHost host = new ServiceHost(typeof(ApplicationInterfaceService)))
 			{
 				// ① エンドポイントの手動構成設定 (C/B/A を指定)
 				//   バインディングの構成設定を行いたい場合には、Binding インスタンスのプロパティを設定する
@@ -215,7 +246,7 @@ namespace Nadesico.Standalone
 				host.Description.Behaviors.Add(new ServiceMetadataBehavior
 				{
 					HttpGetEnabled = true,
-					HttpGetUrl = new Uri("http://localhost:8000/Nadesico.Server/Application/mex")
+					HttpGetUrl = new Uri("http://localhost:8001/Nadesico.Server/Application/mex")
 				});
 
 				// ホストのオープン
@@ -227,5 +258,6 @@ namespace Nadesico.Standalone
 		}
 
 		#endregion メソッド
+
 	}
 }

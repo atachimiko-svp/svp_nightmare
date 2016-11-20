@@ -5,7 +5,7 @@ using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Nadesico.Service
+namespace SVP.CIL.Service
 {
 	/// <summary>
 	/// アプリケーション通信サービス
