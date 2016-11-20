@@ -2,9 +2,12 @@
 using Nadesico.Gateway;
 using Nadesico.Model;
 using Nadesico.Model.Repository;
+using Nadesico.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ServiceModel;
+using System.ServiceModel.Description;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -31,6 +34,7 @@ namespace Nadesico.Standalone
 			Console.WriteLine("   vfs    : 仮想空間ファイル監視機能モード");
 			Console.WriteLine("   cat1   : カテゴリ機能モード1");
 			Console.WriteLine("   ctm1   : コンテンツ機能モード1");
+			Console.WriteLine("   srv1   : サーバ起動1");
 			Console.WriteLine("   e      : 終了");
 
 			Console.Write("> ");
@@ -46,6 +50,9 @@ namespace Nadesico.Standalone
 					break;
 				case "ctm1":
 					RunContentTB1();
+					break;
+				case "srv1":
+					RunServiceTB1();
 					break;
 				case "e":
 					break;
@@ -123,7 +130,7 @@ namespace Nadesico.Standalone
 			ApplicationContext.SetupApplicationContextImpl(ApplicationContextImpl.CreateInstance(application, buildAssemblyType));
 			((ApplicationContextImpl)ApplicationContextImpl.GetInstance()).InitializeApplication();
 
-			using(var dbc = new AppDbContext())
+			using (var dbc = new AppDbContext())
 			{
 				var content = new ContentImage();
 				content.IdentifyKey = "aaaa";
@@ -141,6 +148,7 @@ namespace Nadesico.Standalone
 
 			Console.WriteLine("永続化が完了しました。");
 		}
+
 		static void RunFileWatcherTB()
 		{
 			// Serviceサーバーを起動して、クライアントにWSDLなどを公開するためのコンソールプログラムです。
@@ -175,7 +183,49 @@ namespace Nadesico.Standalone
 
 		}
 
-		#endregion メソッド
+		static void RunServiceTB1()
+		{
+			// Serviceサーバーを起動して、クライアントにWSDLなどを公開するためのコンソールプログラムです。
+			System.Threading.Thread.CurrentThread.Name = "Nadesico API";
+			application = new Application();
 
+			var buildAssemblyType = new BuildAssemblyParameter();
+			buildAssemblyType.Params["ApplicationDirectoryPath"] = @"\Nadesico_InvokeServiceConsole";
+
+			ApplicationContext.SetupApplicationContextImpl(ApplicationContextImpl.CreateInstance(application, buildAssemblyType));
+			((ApplicationContextImpl)ApplicationContextImpl.GetInstance()).InitializeApplication();
+
+			using (ServiceHost host = new ServiceHost(typeof(IApplicationInterfaceService)))
+			{
+				// ① エンドポイントの手動構成設定 (C/B/A を指定)
+				//   バインディングの構成設定を行いたい場合には、Binding インスタンスのプロパティを設定する
+				var binder = new NetNamedPipeBinding();
+				binder.MaxBufferSize = 1073741824;
+				binder.MaxBufferPoolSize = 1073741824;
+				binder.MaxReceivedMessageSize = 1073741824;
+				binder.ReaderQuotas.MaxArrayLength = 1073741824;
+
+				host.AddServiceEndpoint(typeof(IApplicationInterfaceService), binder,
+					"net.pipe://localhost/Nadesico.Server/Application");
+				// ② ビヘイビアの手動構成設定
+				//   すでにいくつかのビヘイビアは既定で追加されているため、取り払ってから再設定する
+				host.Description.Behaviors.Remove(typeof(ServiceDebugBehavior));
+				host.Description.Behaviors.Remove(typeof(ServiceMetadataBehavior));
+				host.Description.Behaviors.Add(new ServiceDebugBehavior { IncludeExceptionDetailInFaults = true });
+				host.Description.Behaviors.Add(new ServiceMetadataBehavior
+				{
+					HttpGetEnabled = true,
+					HttpGetUrl = new Uri("http://localhost:8000/Nadesico.Server/Application/mex")
+				});
+
+				// ホストのオープン
+				host.Open();
+				Console.WriteLine("WCF サービスを起動しました。");
+				Console.ReadLine();
+				host.Close();
+			}
+		}
+
+		#endregion メソッド
 	}
 }
