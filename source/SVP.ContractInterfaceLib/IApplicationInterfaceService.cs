@@ -25,7 +25,7 @@ namespace SVP.CIL.Service
 		
 		[OperationContract]
 		ResponseCategoryLoadList CategoryLoadList(RequestCategoryLoadList reqparam);
-		
+
 
 		[OperationContract(IsInitiating = true, IsTerminating = false)]
 		void Login();
@@ -33,7 +33,9 @@ namespace SVP.CIL.Service
 		[OperationContract(IsInitiating = false, IsTerminating = true)]
 		void Logout();
 
-		#endregion メソッド
+		[OperationContract]
+		ResponseWorkspaceLoadList WorkspaceLoadList(RequestWorkspaceLoadList reqparam);
 
+		#endregion メソッド
 	}
 }

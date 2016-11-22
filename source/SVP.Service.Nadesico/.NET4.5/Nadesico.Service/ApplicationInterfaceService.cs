@@ -38,9 +38,8 @@ namespace Nadesico.Service
 			// マッピングするクラスの紐付け設定
 			MapperConfig = new MapperConfiguration(cfg =>
 			{
-				cfg.CreateMap<Category, SVP.CIL.Domain.Category>()
-				.ReverseMap()
-				;
+				cfg.CreateMap<Category, SVP.CIL.Domain.Category>().ReverseMap();
+				cfg.CreateMap<Workspace, SVP.CIL.Domain.Workspace>().ReverseMap();
 			});
 
 			Mapper = MapperConfig.CreateMapper();
@@ -140,6 +139,43 @@ namespace Nadesico.Service
 		public void Logout()
 		{
 			LOG.Debug("Execute API Logout");
+		}
+
+		public ResponseWorkspaceLoadList WorkspaceLoadList(RequestWorkspaceLoadList reqparam)
+		{
+			var resp = new ResponseWorkspaceLoadList();
+
+			try
+			{
+				using (var dbc = new AppDbContext())
+				{
+					var repo = new WorkspaceRepository(dbc);
+					
+					resp.Datas = new List<SVP.CIL.Domain.Workspace>();
+
+					foreach (var c in repo.GetAll())
+					{
+						var domainWorkspace = Mapper.Map<SVP.CIL.Domain.Workspace>(c);
+						resp.Datas.Add(domainWorkspace);
+					}
+
+					resp.Success = true;
+				}
+			}
+			catch (DbEntityValidationException dbEx)
+			{
+				foreach (DbEntityValidationResult entityErr in dbEx.EntityValidationErrors)
+				{
+					foreach (DbValidationError error in entityErr.ValidationErrors)
+					{
+						Console.WriteLine("Error Property Name {0} : Error Message: {1}",
+											error.PropertyName, error.ErrorMessage);
+						resp.Success = false;
+					}
+				}
+			}
+
+			return resp;
 		}
 
 		private SVP.CIL.Domain.Category CategoryCreate(AppDbContext dbc, SVP.CIL.Domain.Category target)
