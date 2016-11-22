@@ -48,10 +48,12 @@
     <Compile Include="Request\CrudType.cs" />
     <Compile Include="Request\RequestCategoryCrud.cs" />
     <Compile Include="Request\RequestCategoryLoadList.cs" />
+    <Compile Include="Request\RequestWorkspaceCrud.cs" />
     <Compile Include="Request\RequestWorkspaceLoadList.cs" />
     <Compile Include="Response\ResponseBase.cs" />
     <Compile Include="Response\ResponseCategoryCrud.cs" />
     <Compile Include="Response\ResponseCategoryLoadList.cs" />
+    <Compile Include="Response\ResponseWorkspaceCrud.cs" />
     <Compile Include="Response\ResponseWorkspaceLoadList.cs" />
   </ItemGroup>
   <ItemGroup />

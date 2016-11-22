@@ -141,6 +141,50 @@ namespace Nadesico.Service
 			LOG.Debug("Execute API Logout");
 		}
 
+		public ResponseWorkspaceCrud WorkspaceCrud(RequestWorkspaceCrud reqparam)
+		{
+			var resp = new ResponseWorkspaceCrud();
+			try
+			{
+				using (var dbc = new AppDbContext())
+				{
+					switch (reqparam.Crud)
+					{
+						case CrudType.CREATE:
+							resp.Data = WorkspaceCreate(dbc, reqparam.Target);
+							resp.Success = true;
+							break;
+						case CrudType.DELETE:
+							resp.Success = WorkspaceDelete(dbc, reqparam.Target);
+							break;
+						case CrudType.READ:
+							resp.Data = WorkspaceRead(dbc, reqparam.Target);
+							resp.Success = true;
+							break;
+						case CrudType.UPDATE:
+							resp.Data = WorkspaceUpdate(dbc, reqparam.Target);
+							resp.Success = true;
+							break;
+					}
+				}
+			}
+			catch (DbEntityValidationException dbEx)
+			{
+				foreach (DbEntityValidationResult entityErr in dbEx.EntityValidationErrors)
+				{
+					foreach (DbValidationError error in entityErr.ValidationErrors)
+					{
+						Console.WriteLine("Error Property Name {0} : Error Message: {1}",
+											error.PropertyName, error.ErrorMessage);
+						resp.Success = false;
+					}
+				}
+			}
+
+
+			return resp;
+		}
+
 		public ResponseWorkspaceLoadList WorkspaceLoadList(RequestWorkspaceLoadList reqparam)
 		{
 			var resp = new ResponseWorkspaceLoadList();
@@ -150,7 +194,7 @@ namespace Nadesico.Service
 				using (var dbc = new AppDbContext())
 				{
 					var repo = new WorkspaceRepository(dbc);
-					
+
 					resp.Datas = new List<SVP.CIL.Domain.Workspace>();
 
 					foreach (var c in repo.GetAll())
@@ -204,6 +248,7 @@ namespace Nadesico.Service
 			var domainCategory = Mapper.Map<SVP.CIL.Domain.Category>(category);
 			return domainCategory;
 		}
+
 		private SVP.CIL.Domain.Category CategoryUpdate(AppDbContext dbc, SVP.CIL.Domain.Category target)
 		{
 			var repo = new CategoryRepository(dbc);
@@ -213,6 +258,44 @@ namespace Nadesico.Service
 			dbc.SaveChanges();
 			var domainCategory = Mapper.Map<SVP.CIL.Domain.Category>(category);
 			return domainCategory;
+		}
+
+		private SVP.CIL.Domain.Workspace WorkspaceCreate(AppDbContext dbc, SVP.CIL.Domain.Workspace target)
+		{
+			var workspace = Mapper.Map<Workspace>(target);
+			var repo = new WorkspaceRepository(dbc);
+			repo.Add(workspace);
+			dbc.SaveChanges();
+			var domainWorkspace = Mapper.Map<SVP.CIL.Domain.Workspace>(workspace);
+			return domainWorkspace;
+		}
+
+		private bool WorkspaceDelete(AppDbContext dbc, SVP.CIL.Domain.Workspace target)
+		{
+			var repo = new WorkspaceRepository(dbc);
+			var workspace = repo.Load(target.Id);
+			repo.Delete(workspace);
+			dbc.SaveChanges();
+			return true;
+		}
+
+		private SVP.CIL.Domain.Workspace WorkspaceRead(AppDbContext dbc, SVP.CIL.Domain.Workspace target)
+		{
+			var repo = new WorkspaceRepository(dbc);
+			var workspace = repo.Load(target.Id);
+			var domainWorkspace = Mapper.Map<SVP.CIL.Domain.Workspace>(workspace);
+			return domainWorkspace;
+		}
+
+		private SVP.CIL.Domain.Workspace WorkspaceUpdate(AppDbContext dbc, SVP.CIL.Domain.Workspace target)
+		{
+			var repo = new WorkspaceRepository(dbc);
+			var workspace = repo.Load(target.Id);
+			Mapper.Map<SVP.CIL.Domain.Workspace, Workspace>(target, workspace);
+			repo.Save();
+			dbc.SaveChanges();
+			var domainWorkspace = Mapper.Map<SVP.CIL.Domain.Workspace>(workspace);
+			return domainWorkspace;
 		}
 
 		#endregion メソッド

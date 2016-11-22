@@ -34,6 +34,9 @@ namespace SVP.CIL.Service
 		void Logout();
 
 		[OperationContract]
+		ResponseWorkspaceCrud WorkspaceCrud(RequestWorkspaceCrud reqparam);
+
+		[OperationContract]
 		ResponseWorkspaceLoadList WorkspaceLoadList(RequestWorkspaceLoadList reqparam);
 
 		#endregion メソッド
