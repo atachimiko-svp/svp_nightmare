@@ -68,7 +68,7 @@ namespace Nadesico.Gateway
 				.WithMany(p => p.Labels)
 				.Map(m =>
 				{
-					m.MapLeftKey("LavelId");
+					m.MapLeftKey("LabelId");
 					m.MapRightKey("ContentId");
 					m.ToTable("svp_T_Label2Content");
 				});
