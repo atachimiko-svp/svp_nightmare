@@ -17,6 +17,8 @@ namespace Nadesico.Model
 
 		private IList<Tag> _ChildTags;
 
+		private IList<Content> _Contents;
+
 		private Tag _ParentTag;
 
 		#endregion フィールド
@@ -27,6 +29,7 @@ namespace Nadesico.Model
 		public Tag()
 		{
 			ChildTags = new ObservableSynchronizedCollection<Tag>();
+			Contents = new ObservableSynchronizedCollection<Content>();
 		}
 
 		#endregion コンストラクタ
@@ -47,6 +50,18 @@ namespace Nadesico.Model
 		}
 
 		public string Comment { get; set; }
+
+		public virtual IList<Content> Contents
+		{
+			get
+			{ return _Contents; }
+			set
+			{
+				if (_Contents == value)
+					return;
+				_Contents = value;
+			}
+		}
 
 		public DateTime? CreateDate { get; set; }
 

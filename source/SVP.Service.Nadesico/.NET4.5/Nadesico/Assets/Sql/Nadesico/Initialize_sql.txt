@@ -82,6 +82,18 @@ CREATE TABLE IF NOT EXISTS [svp_Label]
 	[ParentLabel_Id] INTEGER
 );
 
+CREATE TABLE IF NOT EXISTS [svp_T_Label2Content]
+(
+	[LabelId] INTEGER,
+	[ContentId] INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS [svp_T_Tag2Content]
+(
+	[TagId] INTEGER,
+	[ContentId] INTEGER
+);
+
 --
 -- TABLE MODIFY
 -- 

@@ -53,6 +53,25 @@ namespace Nadesico.Gateway
 
 		protected override void OnModelCreating(DbModelBuilder modelBuilder)
 		{
+			modelBuilder.Entity<Tag>()
+				.HasMany(c => c.Contents)
+				.WithMany(p => p.Tags)
+				.Map(m =>
+				{
+					m.MapLeftKey("TagId");
+					m.MapRightKey("ContentId");
+					m.ToTable("svp_T_Tag2Content");
+				});
+
+			modelBuilder.Entity<Label>()
+				.HasMany(c => c.Contents)
+				.WithMany(p => p.Labels)
+				.Map(m =>
+				{
+					m.MapLeftKey("LavelId");
+					m.MapRightKey("ContentId");
+					m.ToTable("svp_T_Label2Content");
+				});
 		}
 
 		protected override bool ShouldValidateEntity(DbEntityEntry entityEntry)
