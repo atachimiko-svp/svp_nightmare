@@ -14,6 +14,7 @@ namespace Nadesico.Model.Repository
 	public sealed class ContentRepository : GenericRepository<Content>
 	{
 
+
 		#region コンストラクタ
 
 		public ContentRepository(DbContext context) : base(context)
@@ -24,6 +25,16 @@ namespace Nadesico.Model.Repository
 		#endregion コンストラクタ
 
 		#region メソッド
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="category"></param>
+		/// <returns></returns>
+		public IQueryable<Content> FindByCategory(Category category)
+		{
+			return _dbset.Where(x => x.Category.Id == category.Id);
+		}
 
 		/// <summary>
 		/// Contentの読込

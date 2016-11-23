@@ -20,6 +20,7 @@ namespace Nadesico.Model
 		public bool ArchiveFlag { get; set; }
 		public DateTime? AttachCategoryDate { get; set; }
 		public string Caption { get; set; }
+		public Category Category { get; set; }
 		public string Comment { get; set; }
 		public string ContentHash { get; set; }
 		public DateTime? CreateDate { get; set; }

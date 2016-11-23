@@ -131,6 +131,42 @@ namespace Nadesico.Service
 			return resp;
 		}
 
+		public ResponseContentFindByCategory ContentFindByCategory(RequestContentFindByCategory reqparam)
+		{
+			var resp = new ResponseContentFindByCategory();
+
+			try
+			{
+				using (var dbc = new AppDbContext())
+				{
+					var repoContent = new ContentRepository(dbc);
+					resp.Datas = new List<SVP.CIL.Domain.Content>();
+
+					foreach (var c in repoContent.FindByCategory(new Category { Id = reqparam.Category.Id }))
+					{
+						var domainContent = Mapper.Map<SVP.CIL.Domain.Content>(c);
+						resp.Datas.Add(domainContent);
+					}
+
+					resp.Success = true;
+				}
+			}
+			catch (DbEntityValidationException dbEx)
+			{
+				foreach (DbEntityValidationResult entityErr in dbEx.EntityValidationErrors)
+				{
+					foreach (DbValidationError error in entityErr.ValidationErrors)
+					{
+						Console.WriteLine("Error Property Name {0} : Error Message: {1}",
+											error.PropertyName, error.ErrorMessage);
+						resp.Success = false;
+					}
+				}
+			}
+
+			return resp;
+		}
+
 		public void Login()
 		{
 			LOG.Debug("Execute API Login");

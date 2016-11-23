@@ -34,7 +34,8 @@ CREATE TABLE IF NOT EXISTS [svp_Content]
 	[CreateDate] DATE,
 	[LastUpDate] DATE,
 	[AttachCategoryDate] DATE,
-	[ThumbnailHash] TEXT
+	[ThumbnailHash] TEXT,
+	[Category_Id] INT
 );
 
 CREATE TABLE IF NOT EXISTS [svp_Content_Image]

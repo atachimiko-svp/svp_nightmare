@@ -27,6 +27,9 @@ namespace SVP.CIL.Service
 		ResponseCategoryLoadList CategoryLoadList(RequestCategoryLoadList reqparam);
 
 
+		[OperationContract]
+		ResponseContentFindByCategory ContentFindByCategory(RequestContentFindByCategory reqparam);
+
 		[OperationContract(IsInitiating = true, IsTerminating = false)]
 		void Login();
 
@@ -40,5 +43,6 @@ namespace SVP.CIL.Service
 		ResponseWorkspaceLoadList WorkspaceLoadList(RequestWorkspaceLoadList reqparam);
 
 		#endregion メソッド
+
 	}
 }

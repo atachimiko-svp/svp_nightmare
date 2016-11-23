@@ -42,17 +42,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Domain\Category.cs" />
+    <Compile Include="Domain\Content.cs" />
     <Compile Include="Domain\Workspace.cs" />
     <Compile Include="IApplicationInterfaceService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Request\CrudType.cs" />
     <Compile Include="Request\RequestCategoryCrud.cs" />
     <Compile Include="Request\RequestCategoryLoadList.cs" />
+    <Compile Include="Request\RequestContentFindByCategory.cs" />
     <Compile Include="Request\RequestWorkspaceCrud.cs" />
     <Compile Include="Request\RequestWorkspaceLoadList.cs" />
     <Compile Include="Response\ResponseBase.cs" />
     <Compile Include="Response\ResponseCategoryCrud.cs" />
     <Compile Include="Response\ResponseCategoryLoadList.cs" />
+    <Compile Include="Response\ResponseContentFindByCategory.cs" />
     <Compile Include="Response\ResponseWorkspaceCrud.cs" />
     <Compile Include="Response\ResponseWorkspaceLoadList.cs" />
   </ItemGroup>
