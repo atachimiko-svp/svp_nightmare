@@ -34,7 +34,8 @@ CREATE TABLE IF NOT EXISTS [svp_Content]
 	[CreateDate] DATE,
 	[LastUpDate] DATE,
 	[AttachCategoryDate] DATE,
-	[ThumbnailHash] TEXT
+	[ThumbnailHash] TEXT,
+	[Category_Id] INT
 );
 
 CREATE TABLE IF NOT EXISTS [svp_Content_Image]
@@ -80,6 +81,25 @@ CREATE TABLE IF NOT EXISTS [svp_Label]
 	[LastUpDate] DATE,
 	[ParentLabel_Id] INTEGER
 );
+
+CREATE TABLE IF NOT EXISTS [svp_T_Label2Content]
+(
+	[LabelId] INTEGER,
+	[ContentId] INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS [svp_T_Tag2Content]
+(
+	[TagId] INTEGER,
+	[ContentId] INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS [svp_T_Label2Category]
+(
+	[LabelId] INTEGER,
+	[CategoryId] INTEGER
+);
+
 
 --
 -- TABLE MODIFY

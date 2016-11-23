@@ -24,6 +24,15 @@ namespace Nadesico.Model.Repository
 		#region メソッド
 
 		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
+		public IQueryable<Tag> FindFloatTag()
+		{
+			return _dbset.Where(x => x.ParentTag == null);
+		}
+
+		/// <summary>
 		/// Tagの読み込み
 		/// </summary>
 		/// <param name="id"></param>
@@ -34,6 +43,5 @@ namespace Nadesico.Model.Repository
 		}
 
 		#endregion メソッド
-
 	}
 }
