@@ -43,9 +43,41 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Contribution\Akalib\.NET4.5\Akalib.Entity\Akalib.Entity.csproj">
+      <Project>{756953ce-a786-4a28-add8-6e744633c904}</Project>
+      <Name>Akalib.Entity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Contribution\Akalib\.NET4.5\Akalib.Wpf.Mvvm\Akalib.Wpf.Mvvm.csproj">
+      <Project>{3821a2c9-9111-4623-ae66-d9355a5aaa0a}</Project>
+      <Name>Akalib.Wpf.Mvvm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Contribution\Akalib\.NET4.5\Akalib.Wpf\Akalib.Wpf.csproj">
+      <Project>{b55f2d6b-b39f-4431-94d2-bee0b7ab974e}</Project>
+      <Name>Akalib.Wpf</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Contribution\Akalib\.NET4.5\Akalib\Akalib.csproj">
+      <Project>{ac9a53e6-25c0-4465-8f91-671de8d9573e}</Project>
+      <Name>Akalib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\SVP.CommonLib\SVP.CommonLib\SVP.CommonLib.csproj">
       <Project>{c47dc9ab-5f93-4282-abfe-b1648840087c}</Project>
       <Name>SVP.CommonLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\SVP.ContractInterfaceLib\SVP.ContractInterfaceLib.csproj">
+      <Project>{530e1a0b-e9db-4158-b072-257b6e1c29b0}</Project>
+      <Name>SVP.ContractInterfaceLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sakura.Common\Sakura.Common.csproj">
+      <Project>{59070afe-0128-4a20-9d29-a53d26e93406}</Project>
+      <Name>Sakura.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sakura.Core\Sakura.Core.csproj">
+      <Project>{0bc50fde-123d-451a-b294-ea0fb20e3892}</Project>
+      <Name>Sakura.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sakura.Data\Sakura.Data.csproj">
+      <Project>{869119b4-4092-4bd4-9ba4-df2e84a566dd}</Project>
+      <Name>Sakura.Data</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
