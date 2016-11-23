@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickZip.UserControls", "..
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SVP.CommonLib", "..\SVP.CommonLib\SVP.CommonLib\SVP.CommonLib.csproj", "{C47DC9AB-5F93-4282-ABFE-B1648840087C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SVP.ContractInterfaceLib", "..\SVP.ContractInterfaceLib\SVP.ContractInterfaceLib.csproj", "{530E1A0B-E9DB-4158-B072-257B6E1C29B0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,6 +87,10 @@ Global
 		{C47DC9AB-5F93-4282-ABFE-B1648840087C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C47DC9AB-5F93-4282-ABFE-B1648840087C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C47DC9AB-5F93-4282-ABFE-B1648840087C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{530E1A0B-E9DB-4158-B072-257B6E1C29B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{530E1A0B-E9DB-4158-B072-257B6E1C29B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{530E1A0B-E9DB-4158-B072-257B6E1C29B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{530E1A0B-E9DB-4158-B072-257B6E1C29B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -102,5 +108,6 @@ Global
 		{3821A2C9-9111-4623-AE66-D9355A5AAA0A} = {91E12AD3-7EA1-4FF0-9B8E-0470B664C2CE}
 		{AED294F4-F7F7-4286-88D0-0122846CA526} = {91E12AD3-7EA1-4FF0-9B8E-0470B664C2CE}
 		{C47DC9AB-5F93-4282-ABFE-B1648840087C} = {91E12AD3-7EA1-4FF0-9B8E-0470B664C2CE}
+		{530E1A0B-E9DB-4158-B072-257B6E1C29B0} = {91E12AD3-7EA1-4FF0-9B8E-0470B664C2CE}
 	EndGlobalSection
 EndGlobal
