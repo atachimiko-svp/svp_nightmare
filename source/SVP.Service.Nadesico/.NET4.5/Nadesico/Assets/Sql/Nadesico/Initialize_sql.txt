@@ -94,6 +94,13 @@ CREATE TABLE IF NOT EXISTS [svp_T_Tag2Content]
 	[ContentId] INTEGER
 );
 
+CREATE TABLE IF NOT EXISTS [svp_T_Label2Category]
+(
+	[LabelId] INTEGER,
+	[CategoryId] INTEGER
+);
+
+
 --
 -- TABLE MODIFY
 -- 

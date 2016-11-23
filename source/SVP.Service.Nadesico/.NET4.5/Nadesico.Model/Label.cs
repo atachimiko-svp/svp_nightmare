@@ -15,10 +15,10 @@ namespace Nadesico.Model
 
 		#region フィールド
 
+		private IList<Category> _Categories;
 		private IList<Label> _ChildLabels;
 
 		private IList<Content> _Contents;
-
 		Label _ParentLabel;
 
 		#endregion フィールド
@@ -30,12 +30,25 @@ namespace Nadesico.Model
 		{
 			ChildLabels = new ObservableSynchronizedCollection<Label>();
 			Contents = new ObservableSynchronizedCollection<Content>();
+			Categories = new ObservableSynchronizedCollection<Category>();
 		}
 
 		#endregion コンストラクタ
 
 
 		#region プロパティ
+
+		public virtual IList<Category> Categories
+		{
+			get
+			{ return _Categories; }
+			set
+			{
+				if (_Categories == value)
+					return;
+				_Categories = value;
+			}
+		}
 
 		public virtual IList<Label> ChildLabels
 		{

@@ -72,6 +72,16 @@ namespace Nadesico.Gateway
 					m.MapRightKey("ContentId");
 					m.ToTable("svp_T_Label2Content");
 				});
+
+			modelBuilder.Entity<Label>()
+				.HasMany(c => c.Categories)
+				.WithMany(p => p.Labels)
+				.Map(m =>
+				{
+					m.MapLeftKey("LabelId");
+					m.MapRightKey("CategoryId");
+					m.ToTable("svp_T_Label2Category");
+				});
 		}
 
 		protected override bool ShouldValidateEntity(DbEntityEntry entityEntry)

@@ -17,7 +17,10 @@ namespace Nadesico.Model
 
 		private IList<Category> _ChildCategories;
 
+		IList<Label> _Labels;
+
 		Content _LastSelectedContent;
+
 		private Category _ParentCategory;
 
 		#endregion フィールド
@@ -28,6 +31,7 @@ namespace Nadesico.Model
 		public Category()
 		{
 			ChildCategories = new ObservableSynchronizedCollection<Category>();
+			Labels = new ObservableSynchronizedCollection<Label>();
 		}
 
 		#endregion コンストラクタ
@@ -50,6 +54,18 @@ namespace Nadesico.Model
 		public string Comment { get; set; }
 
 		public DateTime? CreateDate { get; set; }
+
+		public virtual IList<Label> Labels
+		{
+			get
+			{ return _Labels; }
+			set
+			{
+				if (_Labels == value)
+					return;
+				_Labels = value;
+			}
+		}
 
 		public virtual Content LastSelectedContent
 		{
@@ -81,5 +97,6 @@ namespace Nadesico.Model
 		public CategorySortType SortType { get; set; }
 
 		#endregion プロパティ
+
 	}
 }
