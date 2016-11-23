@@ -30,11 +30,23 @@ namespace SVP.CIL.Service
 		[OperationContract]
 		ResponseContentFindByCategory ContentFindByCategory(RequestContentFindByCategory reqparam);
 
+		[OperationContract]
+		ResponseLabelCrud LabelCrud(RequestLabelCrud reqparam);
+
+		[OperationContract]
+		ResponseLabelLoadList LabelLoadList(RequestLabelLoadList reqparam);
+
 		[OperationContract(IsInitiating = true, IsTerminating = false)]
 		void Login();
 
 		[OperationContract(IsInitiating = false, IsTerminating = true)]
 		void Logout();
+
+		[OperationContract]
+		ResponseTagCrud TagCrud(RequestTagCrud reqparam);
+
+		[OperationContract]
+		ResponseTagLoadList TagLoadList(RequestTagLoadList reqparam);
 
 		[OperationContract]
 		ResponseWorkspaceCrud WorkspaceCrud(RequestWorkspaceCrud reqparam);

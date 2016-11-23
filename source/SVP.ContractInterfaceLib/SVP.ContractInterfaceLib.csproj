@@ -43,6 +43,8 @@
   <ItemGroup>
     <Compile Include="Domain\Category.cs" />
     <Compile Include="Domain\Content.cs" />
+    <Compile Include="Domain\Label.cs" />
+    <Compile Include="Domain\Tag.cs" />
     <Compile Include="Domain\Workspace.cs" />
     <Compile Include="IApplicationInterfaceService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -50,12 +52,20 @@
     <Compile Include="Request\RequestCategoryCrud.cs" />
     <Compile Include="Request\RequestCategoryLoadList.cs" />
     <Compile Include="Request\RequestContentFindByCategory.cs" />
+    <Compile Include="Request\RequestLabelCrud.cs" />
+    <Compile Include="Request\RequestLabelLoadList.cs" />
+    <Compile Include="Request\RequestTagCrud.cs" />
+    <Compile Include="Request\RequestTagLoadList.cs" />
     <Compile Include="Request\RequestWorkspaceCrud.cs" />
     <Compile Include="Request\RequestWorkspaceLoadList.cs" />
+    <Compile Include="Response\ResponseLabelCrud.cs" />
     <Compile Include="Response\ResponseBase.cs" />
     <Compile Include="Response\ResponseCategoryCrud.cs" />
     <Compile Include="Response\ResponseCategoryLoadList.cs" />
     <Compile Include="Response\ResponseContentFindByCategory.cs" />
+    <Compile Include="Response\ResponseLabelLoadList.cs" />
+    <Compile Include="Response\ResponseTagCrud.cs" />
+    <Compile Include="Response\ResponseTagLoadList.cs" />
     <Compile Include="Response\ResponseWorkspaceCrud.cs" />
     <Compile Include="Response\ResponseWorkspaceLoadList.cs" />
   </ItemGroup>

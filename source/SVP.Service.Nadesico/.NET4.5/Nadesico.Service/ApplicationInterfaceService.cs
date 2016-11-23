@@ -39,6 +39,8 @@ namespace Nadesico.Service
 			MapperConfig = new MapperConfiguration(cfg =>
 			{
 				cfg.CreateMap<Category, SVP.CIL.Domain.Category>().ReverseMap();
+				cfg.CreateMap<Label, SVP.CIL.Domain.Label>().ReverseMap();
+				cfg.CreateMap<Tag, SVP.CIL.Domain.Tag>().ReverseMap();
 				cfg.CreateMap<Workspace, SVP.CIL.Domain.Workspace>().ReverseMap();
 			});
 
@@ -167,6 +169,99 @@ namespace Nadesico.Service
 			return resp;
 		}
 
+		public ResponseLabelCrud LabelCrud(RequestLabelCrud reqparam)
+		{
+			var resp = new ResponseLabelCrud();
+			try
+			{
+				using (var dbc = new AppDbContext())
+				{
+					switch (reqparam.Crud)
+					{
+						case CrudType.CREATE:
+							resp.Data = LabelCreate(dbc, reqparam.Target);
+							resp.Success = true;
+							break;
+						case CrudType.DELETE:
+							resp.Success = LabelDelete(dbc, reqparam.Target);
+							break;
+						case CrudType.READ:
+							resp.Data = LabelRead(dbc, reqparam.Target);
+							resp.Success = true;
+							break;
+						case CrudType.UPDATE:
+							resp.Data = LabelUpdate(dbc, reqparam.Target);
+							resp.Success = true;
+							break;
+					}
+				}
+			}
+			catch (DbEntityValidationException dbEx)
+			{
+				foreach (DbEntityValidationResult entityErr in dbEx.EntityValidationErrors)
+				{
+					foreach (DbValidationError error in entityErr.ValidationErrors)
+					{
+						Console.WriteLine("Error Property Name {0} : Error Message: {1}",
+											error.PropertyName, error.ErrorMessage);
+						resp.Success = false;
+					}
+				}
+			}
+
+
+			return resp;
+		}
+
+		public ResponseLabelLoadList LabelLoadList(RequestLabelLoadList reqparam)
+		{
+			var resp = new ResponseLabelLoadList();
+
+			try
+			{
+				using (var dbc = new AppDbContext())
+				{
+					var repo = new LabelRepository(dbc);
+					resp.Datas = new List<SVP.CIL.Domain.Label>();
+
+					if (reqparam.ParentTarget != null)
+					{
+						var label = repo.Load(reqparam.ParentTarget.Id);
+						
+						foreach (var c in label.ChildLabels)
+						{
+							var domainLabel = Mapper.Map<SVP.CIL.Domain.Label>(c);
+							resp.Datas.Add(domainLabel);
+						}
+					}
+					else
+					{
+						foreach(var c in repo.FindFloatLabel())
+						{
+							var domainLabel = Mapper.Map<SVP.CIL.Domain.Label>(c);
+							resp.Datas.Add(domainLabel);
+						}
+					}
+
+					resp.Success = true;
+				}
+			}
+			catch (DbEntityValidationException dbEx)
+			{
+				foreach (DbEntityValidationResult entityErr in dbEx.EntityValidationErrors)
+				{
+					foreach (DbValidationError error in entityErr.ValidationErrors)
+					{
+						Console.WriteLine("Error Property Name {0} : Error Message: {1}",
+											error.PropertyName, error.ErrorMessage);
+						resp.Success = false;
+					}
+				}
+			}
+
+			return resp;
+		}
+
 		public void Login()
 		{
 			LOG.Debug("Execute API Login");
@@ -175,6 +270,99 @@ namespace Nadesico.Service
 		public void Logout()
 		{
 			LOG.Debug("Execute API Logout");
+		}
+
+		public ResponseTagCrud TagCrud(RequestTagCrud reqparam)
+		{
+			var resp = new ResponseTagCrud();
+			try
+			{
+				using (var dbc = new AppDbContext())
+				{
+					switch (reqparam.Crud)
+					{
+						case CrudType.CREATE:
+							resp.Data = TagCreate(dbc, reqparam.Target);
+							resp.Success = true;
+							break;
+						case CrudType.DELETE:
+							resp.Success = TagDelete(dbc, reqparam.Target);
+							break;
+						case CrudType.READ:
+							resp.Data = TagRead(dbc, reqparam.Target);
+							resp.Success = true;
+							break;
+						case CrudType.UPDATE:
+							resp.Data = TagUpdate(dbc, reqparam.Target);
+							resp.Success = true;
+							break;
+					}
+				}
+			}
+			catch (DbEntityValidationException dbEx)
+			{
+				foreach (DbEntityValidationResult entityErr in dbEx.EntityValidationErrors)
+				{
+					foreach (DbValidationError error in entityErr.ValidationErrors)
+					{
+						Console.WriteLine("Error Property Name {0} : Error Message: {1}",
+											error.PropertyName, error.ErrorMessage);
+						resp.Success = false;
+					}
+				}
+			}
+
+
+			return resp;
+		}
+
+		public ResponseTagLoadList TagLoadList(RequestTagLoadList reqparam)
+		{
+			var resp = new ResponseTagLoadList();
+
+			try
+			{
+				using (var dbc = new AppDbContext())
+				{
+					var repo = new TagRepository(dbc);
+					resp.Datas = new List<SVP.CIL.Domain.Tag>();
+
+					if (reqparam.ParentTarget != null)
+					{
+						var tag = repo.Load(reqparam.ParentTarget.Id);
+
+						foreach (var c in tag.ChildTags)
+						{
+							var domainTag = Mapper.Map<SVP.CIL.Domain.Tag>(c);
+							resp.Datas.Add(domainTag);
+						}
+					}
+					else
+					{
+						foreach (var c in repo.FindFloatTag())
+						{
+							var domainTag = Mapper.Map<SVP.CIL.Domain.Tag>(c);
+							resp.Datas.Add(domainTag);
+						}
+					}
+
+					resp.Success = true;
+				}
+			}
+			catch (DbEntityValidationException dbEx)
+			{
+				foreach (DbEntityValidationResult entityErr in dbEx.EntityValidationErrors)
+				{
+					foreach (DbValidationError error in entityErr.ValidationErrors)
+					{
+						Console.WriteLine("Error Property Name {0} : Error Message: {1}",
+											error.PropertyName, error.ErrorMessage);
+						resp.Success = false;
+					}
+				}
+			}
+
+			return resp;
 		}
 
 		public ResponseWorkspaceCrud WorkspaceCrud(RequestWorkspaceCrud reqparam)
@@ -296,6 +484,82 @@ namespace Nadesico.Service
 			return domainCategory;
 		}
 
+		private SVP.CIL.Domain.Label LabelCreate(AppDbContext dbc, SVP.CIL.Domain.Label target)
+		{
+			var label = Mapper.Map<Label>(target);
+			var repo = new LabelRepository(dbc);
+			repo.Add(label);
+			dbc.SaveChanges();
+			var domainLabel = Mapper.Map<SVP.CIL.Domain.Label>(label);
+			return domainLabel;
+		}
+
+		private bool LabelDelete(AppDbContext dbc, SVP.CIL.Domain.Label target)
+		{
+			var repo = new LabelRepository(dbc);
+			var label = repo.Load(target.Id);
+			repo.Delete(label);
+			dbc.SaveChanges();
+			return true;
+		}
+
+		private SVP.CIL.Domain.Label LabelRead(AppDbContext dbc, SVP.CIL.Domain.Label target)
+		{
+			var repo = new LabelRepository(dbc);
+			var label = repo.Load(target.Id);
+			var domainLabel = Mapper.Map<SVP.CIL.Domain.Label>(label);
+			return domainLabel;
+		}
+
+		private SVP.CIL.Domain.Label LabelUpdate(AppDbContext dbc, SVP.CIL.Domain.Label target)
+		{
+			var repo = new LabelRepository(dbc);
+			var label = repo.Load(target.Id);
+			Mapper.Map<SVP.CIL.Domain.Label, Label>(target, label);
+			repo.Save();
+			dbc.SaveChanges();
+			var domainLabel = Mapper.Map<SVP.CIL.Domain.Label>(label);
+			return domainLabel;
+		}
+
+		private SVP.CIL.Domain.Tag TagCreate(AppDbContext dbc, SVP.CIL.Domain.Tag target)
+		{
+			var tag = Mapper.Map<Tag>(target);
+			var repo = new TagRepository(dbc);
+			repo.Add(tag);
+			dbc.SaveChanges();
+			var domainTag = Mapper.Map<SVP.CIL.Domain.Tag>(tag);
+			return domainTag;
+		}
+
+		private bool TagDelete(AppDbContext dbc, SVP.CIL.Domain.Tag target)
+		{
+			var repo = new TagRepository(dbc);
+			var tag = repo.Load(target.Id);
+			repo.Delete(tag);
+			dbc.SaveChanges();
+			return true;
+		}
+
+		private SVP.CIL.Domain.Tag TagRead(AppDbContext dbc, SVP.CIL.Domain.Tag target)
+		{
+			var repo = new TagRepository(dbc);
+			var tag = repo.Load(target.Id);
+			var domainTag = Mapper.Map<SVP.CIL.Domain.Tag>(tag);
+			return domainTag;
+		}
+
+		private SVP.CIL.Domain.Tag TagUpdate(AppDbContext dbc, SVP.CIL.Domain.Tag target)
+		{
+			var repo = new TagRepository(dbc);
+			var tag = repo.Load(target.Id);
+			Mapper.Map<SVP.CIL.Domain.Tag, Tag>(target, tag);
+			repo.Save();
+			dbc.SaveChanges();
+			var domainTag = Mapper.Map<SVP.CIL.Domain.Tag>(tag);
+			return domainTag;
+		}
+
 		private SVP.CIL.Domain.Workspace WorkspaceCreate(AppDbContext dbc, SVP.CIL.Domain.Workspace target)
 		{
 			var workspace = Mapper.Map<Workspace>(target);
@@ -335,6 +599,5 @@ namespace Nadesico.Service
 		}
 
 		#endregion メソッド
-
 	}
 }
