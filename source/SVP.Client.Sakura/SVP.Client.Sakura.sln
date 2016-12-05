@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SVP.CommonLib", "..\SVP.Com
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SVP.ContractInterfaceLib", "..\SVP.ContractInterfaceLib\SVP.ContractInterfaceLib.csproj", "{530E1A0B-E9DB-4158-B072-257B6E1C29B0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sakura.Contrib", ".NET4.5\Sakura.Contrib\Sakura.Contrib.csproj", "{2C1F1FBC-BEE2-4157-82BE-0C5CBF4E003A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,6 +93,10 @@ Global
 		{530E1A0B-E9DB-4158-B072-257B6E1C29B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{530E1A0B-E9DB-4158-B072-257B6E1C29B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{530E1A0B-E9DB-4158-B072-257B6E1C29B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C1F1FBC-BEE2-4157-82BE-0C5CBF4E003A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C1F1FBC-BEE2-4157-82BE-0C5CBF4E003A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C1F1FBC-BEE2-4157-82BE-0C5CBF4E003A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C1F1FBC-BEE2-4157-82BE-0C5CBF4E003A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -109,5 +115,6 @@ Global
 		{AED294F4-F7F7-4286-88D0-0122846CA526} = {91E12AD3-7EA1-4FF0-9B8E-0470B664C2CE}
 		{C47DC9AB-5F93-4282-ABFE-B1648840087C} = {91E12AD3-7EA1-4FF0-9B8E-0470B664C2CE}
 		{530E1A0B-E9DB-4158-B072-257B6E1C29B0} = {91E12AD3-7EA1-4FF0-9B8E-0470B664C2CE}
+		{2C1F1FBC-BEE2-4157-82BE-0C5CBF4E003A} = {D49B93D5-6B5C-4043-A862-AFE785DB9CF2}
 	EndGlobalSection
 EndGlobal

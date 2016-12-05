@@ -1,4 +1,5 @@
-﻿using Sakura.Core.Constractures;
+﻿using Sakura.Applus.Manager;
+using Sakura.Core.Constractures;
 using Sakura.Core.Infrastructures;
 using Sakura.Data.ViewModel;
 using System;
@@ -9,6 +10,13 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using Sakura.Structures;
+using System.Windows.Interop;
+using Sakura.Utils;
+using Sakura.Structures;
+using Sakura.Win32;
+using Sakura.Win32.Types;
+using Sakura.Applus;
 
 namespace Sakura
 {
@@ -29,21 +37,31 @@ namespace Sakura
 		/// </summary>
 		bool _alreadyDisposed = false;
 
-
 		/// <summary>
 		/// WPFアプリケーションのコンテキスト
 		/// </summary>
 		Application _Application;
+
+		ContentRepository _ContentRepository;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		Dpi _CurrentDpi;
 
 		/// <summary>
 		/// 
 		/// </summary>
 		Window _MainWindow;
 
+		UxManager _Ux;
+
 		/// <summary>
 		/// 
 		/// </summary>
 		WorkspaceViewModel _Workspace;
+
+		HwndSource source;
 
 		#endregion フィールド
 
@@ -107,6 +125,25 @@ namespace Sakura
 				return new DirectoryInfo(Path.Combine(ApplicationDirectory.FullName, @"config"));
 			}
 		}
+
+		public IContentRepository ContentRepository
+		{
+			get { return _ContentRepository; }
+		}
+
+		public Dpi CurrentDpi
+		{
+			get
+			{
+				return _CurrentDpi;
+			}
+
+			internal set
+			{
+				_CurrentDpi = value;
+			}
+		}
+
 		public Window MainWindow
 		{
 			get
@@ -114,6 +151,19 @@ namespace Sakura
 				return _MainWindow;
 			}
 			set { _MainWindow = value; }
+		}
+
+		public IUxManager Ux
+		{
+			get
+			{
+				return _Ux;
+			}
+
+			private set
+			{
+				_Ux = (UxManager)value;
+			}
 		}
 
 		/// <summary>
@@ -166,7 +216,17 @@ namespace Sakura
 			System.IO.Directory.CreateDirectory(ApplicationDirectory.FullName);
 			System.IO.Directory.CreateDirectory(ConfigDirectory.FullName);
 
+			this.Ux = new UxManager();
+			this._ContentRepository = new ContentRepository();
+
 			LoadApplicationSettingFile();
+		}
+
+		public void MainWindowSourceInitialize(HwndSource hwnd)
+		{
+			source = hwnd;
+			CurrentDpi = source.GetDpi();
+			source.AddHook(this.WndProc);
 		}
 
 		/// <summary>
@@ -193,6 +253,11 @@ namespace Sakura
 		public void ShutdownProcess()
 		{
 			SaveApplicationSettingFile();
+
+			if (this.source != null)
+			{
+				this.source.RemoveHook(this.WndProc);
+			}
 		}
 
 		protected virtual void Dispose(bool isDisposing)
@@ -207,6 +272,7 @@ namespace Sakura
 
 			_alreadyDisposed = true;
 		}
+
 		/// <summary>
 		/// アプリケーション設定を読込ます。
 		/// </summary>
@@ -231,6 +297,19 @@ namespace Sakura
 					AppConfigInfo.Save(sw);
 				}
 			}
+		}
+
+		IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+		{
+			if (msg == (int)WindowMessage.WM_DPICHANGED)
+			{
+				var dpiX = wParam.ToHiWord();
+				var dpiY = wParam.ToLoWord();
+				((ApplicationContextImpl)ApplicationContextImpl.GetInstance()).CurrentDpi = new Dpi(dpiX, dpiY);
+				handled = true;
+			}
+
+			return IntPtr.Zero;
 		}
 
 		#endregion メソッド

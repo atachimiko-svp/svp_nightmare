@@ -65,8 +65,16 @@
   <ItemGroup>
     <Compile Include="ApplicationContext.cs" />
     <Compile Include="Constractures\AppConfigSetting.cs" />
+    <Compile Include="Criteria\ISearchContent.cs" />
     <Compile Include="Infrastructures\IApplicationContext.cs" />
+    <Compile Include="Infrastructures\IContentLazyItem.cs" />
+    <Compile Include="Infrastructures\IContentRepository.cs" />
+    <Compile Include="Infrastructures\IUxManager.cs" />
     <Compile Include="Infrastructures\IWorkspaceViewModel.cs" />
+    <Compile Include="Presentation\SDocumentViewModelBase.cs" />
+    <Compile Include="Presentation\PaneViewModelBase.cs" />
+    <Compile Include="Presentation\Perspective.cs" />
+    <Compile Include="Presentation\PerspectiveViewModelBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -98,10 +106,15 @@
       <Project>{59070afe-0128-4a20-9d29-a53d26e93406}</Project>
       <Name>Sakura.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Sakura.Contrib\Sakura.Contrib.csproj">
+      <Project>{2c1f1fbc-bee2-4157-82be-0c5cbf4e003a}</Project>
+      <Name>Sakura.Contrib</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

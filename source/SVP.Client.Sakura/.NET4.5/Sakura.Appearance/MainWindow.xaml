@@ -1,15 +1,259 @@
-﻿<Window
-    x:Class="Sakura.Appearance.MainWindow"
+﻿<Metro:MetroWindow
+    x:Class="Sakura.View.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Fluent="urn:fluent-ribbon"
+    xmlns:Metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    xmlns:aka="http://schemas.akalib.net/wpf"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:Sakura.Appearance"
+    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+    xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:sakuComp="clr-namespace:Sakura.View.Components"
+    xmlns:uc="http://www.quickzip.org/UserControls"
     Title="MainWindow"
-    Width="525"
-    Height="350"
+    Width="1500"
+    Height="700"
+    Fluent:RibbonProperties.TitleBarHeight="0"
+    ShowIconOnTitleBar="False"
+    ShowTitleBar="True"
+    TitleCaps="False"
+    WindowState="Normal"
     mc:Ignorable="d">
+    <Metro:MetroWindow.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
+
+                <!--<ResourceDictionary Source="pack://application:,,,/Fluent;Component/Themes/Generic.xaml" />-->
+                <ResourceDictionary Source="pack://application:,,,/Fluent;Component/Themes/Office2013/Generic.xaml" />
+                <!--  ResourceDictionary Source="pack://application:,,,/Fluent;Component/Themes/Windows8/Generic.xaml" /  -->
+
+                <ResourceDictionary>
+
+
+                    <!--  ドキュメントに表示するデータテンプレートの定義  -->
+                    <DataTemplate x:Key="ContentPreviewViewModel">
+                        <Grid>
+                            <sakuComp:ContentPreviewDocument />
+                        </Grid>
+                    </DataTemplate>
+                    <DataTemplate x:Key="ContentListViewModel">
+                        <Grid>
+                            <sakuComp:ContentListDocument />
+                        </Grid>
+                    </DataTemplate>
+                    <DataTemplate x:Key="LabelTreeExplorerViewModel">
+                        <Grid>
+                            <sakuComp:LabelTreeExplorerDocument />
+                        </Grid>
+                    </DataTemplate>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Metro:MetroWindow.Resources>
+    <Metro:MetroWindow.Flyouts>
+        <Metro:FlyoutsControl x:Name="flyoutsControl">
+            <Metro:Flyout
+                x:Name="Flyout_InputLabel"
+                IsOpen="True"
+                Position="Bottom">
+                <Grid>
+                    <TabControl>
+                        <TabItem Header="Header 1">
+                            <TextBlock>Flyout</TextBlock>
+                        </TabItem>
+                        <TabItem Header="Header 2">
+                            <TextBlock>Flyout</TextBlock>
+                        </TabItem>
+                        <TabItem Header="Header 3">
+                            <TextBlock>Flyout</TextBlock>
+                        </TabItem>
+                        <TabItem Header="Header 4">
+                            <TextBlock>Flyout</TextBlock>
+                        </TabItem>
+                        <TabItem Header="Header 5">
+                            <TextBlock>Flyout</TextBlock>
+                        </TabItem>
+
+                    </TabControl>
+                </Grid>
+            </Metro:Flyout>
+            <Metro:Flyout x:Name="Flyout_PropertyView" Position="Right">
+                <Grid />
+            </Metro:Flyout>
+            <Metro:Flyout
+                x:Name="Flyout_FL2"
+                IsOpen="{Binding FL2ViewModel.IsOpen}"
+                Position="Left">
+                <Grid>
+                    <ContentPresenter
+                        x:Name="contentPresenter_Flyout_Left2"
+                        Content="{Binding FL2ViewModel}"
+                        ContentTemplate="{Binding Path=DataContext.FL2, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Metro:MetroWindow}}" />
+                </Grid>
+            </Metro:Flyout>
+            <Metro:Flyout
+                x:Name="Flyout_CategoryView"
+                IsOpen="{Binding FL1ViewModel.IsOpen}"
+                Position="Left">
+                <Grid>
+                    <ContentPresenter
+                        x:Name="contentPresenter_Flyout_Left1"
+                        Content="{Binding FL1ViewModel}"
+                        ContentTemplate="{Binding Path=DataContext.FL1, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Metro:MetroWindow}}" />
+                </Grid>
+            </Metro:Flyout>
+        </Metro:FlyoutsControl>
+    </Metro:MetroWindow.Flyouts>
+    <Metro:MetroWindow.RightWindowCommands>
+        <Metro:WindowCommands>
+            <Button Content="settings" />
+            <Button>
+                <StackPanel Orientation="Horizontal">
+                    <Rectangle
+                        Width="20"
+                        Height="20"
+                        Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />
+                    <TextBlock
+                        Margin="4,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="deploy cupcakes" />
+                </StackPanel>
+            </Button>
+        </Metro:WindowCommands>
+    </Metro:MetroWindow.RightWindowCommands>
     <Grid>
-        <TextBlock>Sakura Application (SVP)</TextBlock>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Fluent:Ribbon x:Name="ribbon" AutomaticStateManagement="True">
+            <Fluent:RibbonTabItem
+                x:Name="homeTabItem"
+                Header="Home"
+                KeyTip="H"
+                ToolTip="Regular Tool Tip">
+                <Fluent:RibbonGroupBox Name="__DebugChange" Header="切り替え">
+                    <Fluent:Button Header="ContentPreview" SizeDefinition="Middle">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Click">
+                                <l:LivetCallMethodAction MethodName="Perspective2" MethodTarget="{Binding}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Fluent:Button>
+                    <Fluent:Button Header="ContentList" SizeDefinition="Middle">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Click">
+                                <l:LivetCallMethodAction MethodName="Perspective1" MethodTarget="{Binding}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Fluent:Button>
+                </Fluent:RibbonGroupBox>
+
+                <Fluent:RibbonGroupBox Name="__Debug" Header="表示デバッグ">
+                    <Fluent:Button Header="Debug1" SizeDefinition="Middle">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Click">
+                                <l:LivetCallMethodAction MethodName="OpenFlyout" MethodTarget="{Binding}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Fluent:Button>
+                    <Fluent:Button Header="サーバデータ読込(DUMMY)" SizeDefinition="Middle">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Click">
+                                <l:LivetCallMethodAction MethodName="StartServerDataLoad" MethodTarget="{Binding ActiveDocument}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Fluent:Button>
+                    <Fluent:Button Header="サーバデータ(BMPクリア)" SizeDefinition="Middle">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Click">
+                                <l:LivetCallMethodAction MethodName="ClearBitmapData" MethodTarget="{Binding ActiveDocument}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Fluent:Button>
+                </Fluent:RibbonGroupBox>
+            </Fluent:RibbonTabItem>
+        </Fluent:Ribbon>
+        <Grid Grid.Row="1">
+            <DockPanel LastChildFill="True">
+                <Grid DockPanel.Dock="Left">
+                    <Grid.Background>
+                        <LinearGradientBrush ColorInterpolationMode="SRgbLinearInterpolation" SpreadMethod="Pad" StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Offset="0" Color="#FFFFFFFF" />
+                            <GradientStop Offset="1" Color="#FFDDDADA" />
+                        </LinearGradientBrush>
+                    </Grid.Background>
+                    <ContentPresenter
+                        x:Name="contentPresenter_DockLeft"
+                        Content="{Binding DockLeftViewModel}"
+                        ContentTemplate="{Binding Path=DataContext.DockLeft, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Metro:MetroWindow}}" />
+                </Grid>
+                <Grid DockPanel.Dock="Right">
+                    <Grid.Background>
+                        <LinearGradientBrush ColorInterpolationMode="SRgbLinearInterpolation" SpreadMethod="Pad" StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Offset="0" Color="#FFFFFFFF" />
+                            <GradientStop Offset="1" Color="#FFDDDADA" />
+                        </LinearGradientBrush>
+                    </Grid.Background>
+                    <ContentPresenter
+                        x:Name="contentPresenter_DockRight"
+                        Content="{Binding DockRightViewModel}"
+                        ContentTemplate="{Binding Path=DataContext.DockRight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Metro:MetroWindow}}" />
+                </Grid>
+                <Grid>
+                    <Grid.Background>
+                        <LinearGradientBrush ColorInterpolationMode="SRgbLinearInterpolation" SpreadMethod="Pad" StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Offset="0" Color="#FFFFFFFF" />
+                            <GradientStop Offset="1" Color="#FFDDDADA" />
+                        </LinearGradientBrush>
+                    </Grid.Background>
+                    <ContentPresenter
+                        x:Name="contentPresenter_LL"
+                        Content="{Binding ActiveDocument}"
+                        ContentTemplate="{Binding Path=DataContext.ViewTemplate, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Metro:MetroWindow}}" />
+                </Grid>
+            </DockPanel>
+        </Grid>
+        <Fluent:StatusBar
+            Grid.Row="2"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Bottom">
+            <Fluent:StatusBarItem
+                Title="Words Width"
+                HorizontalAlignment="Left"
+                Value="150">
+                <TextBlock Text="150 px" />
+            </Fluent:StatusBarItem>
+            <Separator HorizontalAlignment="Left" />
+            <Fluent:StatusBarItem
+                Title="Selected Words"
+                HorizontalAlignment="Left"
+                Content="15"
+                ToolTip="This is Selected Words"
+                Value="15" />
+            <Separator HorizontalAlignment="Left" />
+            <Fluent:StatusBarItem Title="Zoom" HorizontalAlignment="Right" />
+            <Fluent:StatusBarItem Title="Zoom Slider" HorizontalAlignment="Right">
+                <Slider
+                    x:Name="zoomSlider"
+                    IsDirectionReversed="False"
+                    IsSnapToTickEnabled="True"
+                    LargeChange="0.1"
+                    Maximum="2.0"
+                    Minimum="0.5"
+                    SmallChange="0.1"
+                    Style="{DynamicResource ZoomSliderStyle}"
+                    TickFrequency="0.1" />
+            </Fluent:StatusBarItem>
+        </Fluent:StatusBar>
     </Grid>
-</Window>
+
+</Metro:MetroWindow>

@@ -1,0 +1,53 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:localData="clr-namespace:Sakura.Applus.DataSource;assembly=Sakura.Applus"
+    xmlns:uc="http://www.quickzip.org/UserControls">
+
+    <!--  垂直スクロールバーを持つリスト形式のビュー  -->
+    <uc:VirutalWrapPanelView
+        x:Key="ListView"
+        HorizontalContentAlignment="Left"
+        ItemHeight="20"
+        ItemWidth="100"
+        Orientation="Vertical">
+        <uc:VirutalWrapPanelView.ItemTemplate>
+            <DataTemplate>
+                <StackPanel Orientation="Horizontal">
+                    <Image
+                        x:Name="img"
+                        Width="16"
+                        Source="Generic_Document.png" />
+                    <TextBlock Margin="5,0" Text="{Binding Title}" />
+
+                </StackPanel>
+            </DataTemplate>
+        </uc:VirutalWrapPanelView.ItemTemplate>
+    </uc:VirutalWrapPanelView>
+
+
+    <!--  アイコンを持つリスト形式のビュー  -->
+    <uc:VirutalWrapPanelView
+        x:Key="IconView"
+        HorizontalContentAlignment="Left"
+        ItemHeight="60"
+        ItemWidth="50">
+        <uc:VirutalWrapPanelView.ItemTemplate>
+            <DataTemplate>
+                <StackPanel localData:ImageLazyItem.Loaded="{Binding IsLoaded}" Orientation="Vertical">
+                    <Image
+                        x:Name="img"
+                        Width="32"
+                        HorizontalAlignment="Center"
+                        RenderOptions.BitmapScalingMode="HighQuality"
+                        Source="{Binding Thumbnail}" />
+                    <TextBlock
+                        Margin="5,0"
+                        HorizontalAlignment="Center"
+                        Text="{Binding Title}" />
+
+                </StackPanel>
+            </DataTemplate>
+        </uc:VirutalWrapPanelView.ItemTemplate>
+    </uc:VirutalWrapPanelView>
+</ResourceDictionary>

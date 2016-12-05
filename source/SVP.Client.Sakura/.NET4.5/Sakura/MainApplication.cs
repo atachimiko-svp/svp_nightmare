@@ -3,6 +3,7 @@ using log4net;
 using Sakura.Appearance;
 using Sakura.Core;
 using Sakura.Data.ViewModel;
+using Sakura.View;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,9 +15,18 @@ namespace Sakura
 {
 	public static class MainApplication
 	{
+
+
+		#region フィールド
+
 		static App application;
 
 		static ILog LOG = LogManager.GetLogger(typeof(MainApplication));
+
+		#endregion フィールド
+
+
+		#region メソッド
 
 		[STAThread]
 		public static int Main(string[] args)
@@ -56,6 +66,7 @@ namespace Sakura
 				//ApplicationContext.Watch("メインウィンドウの作成");
 
 				mainWindow = new MainWindow();
+
 				mainWindow.DataContext = workspace;
 				((ApplicationContextImpl)ApplicationContextImpl.GetInstance()).MainWindow = mainWindow;
 
@@ -133,5 +144,8 @@ namespace Sakura
 				}
 			}
 		}
+
+		#endregion メソッド
+
 	}
 }

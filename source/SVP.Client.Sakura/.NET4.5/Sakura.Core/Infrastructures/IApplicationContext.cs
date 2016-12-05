@@ -1,4 +1,5 @@
 ﻿using Sakura.Core.Constractures;
+using Sakura.Structures;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,11 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Interop;
 
 namespace Sakura.Core.Infrastructures
 {
 	public interface IApplicationContext
 	{
+
 		#region プロパティ
 
 		/// <summary>
@@ -29,9 +32,24 @@ namespace Sakura.Core.Infrastructures
 		DirectoryInfo ConfigDirectory { get; }
 
 		/// <summary>
+		/// アプリケーションのメインウィンドウがあるデバイスのDPI
+		/// </summary>
+		Dpi CurrentDpi { get; }
+
+		/// <summary>
 		/// 
 		/// </summary>
 		Window MainWindow { get; }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		IUxManager Ux { get; }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		IContentRepository ContentRepository { get; }
 
 		/// <summary>
 		/// 
@@ -53,11 +71,15 @@ namespace Sakura.Core.Infrastructures
 		void InitializeApplication();
 
 		/// <summary>
+		/// 
+		/// </summary>
+		void MainWindowSourceInitialize(HwndSource hwnd);
+
+		/// <summary>
 		/// アプリケーションコンフィグ情報をファイルに保存します
 		/// </summary>
 		void SaveApplicationSettingFile();
 
 		#endregion メソッド
-
 	}
 }
