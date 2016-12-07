@@ -18,7 +18,7 @@ namespace Sakura.Contrib.Infrastructures
 		/// <summary>
 		/// IsLoadedプロパティ内で呼び出すイベントハンドラ
 		/// </summary>
-		event EventHandler Loaded;
+		event EventHandler<LazyItemLoadedEventArgs> Loaded;
 
 		#endregion イベント
 
@@ -37,7 +37,7 @@ namespace Sakura.Contrib.Infrastructures
 		/// 遅延読み込みで取得したデータを引数にして呼び出します。実装により必要なデータをコピーしてください。
 		/// </summary>
 		/// <param name="loadedData"></param>
-		void LoadedFromData(SV loadedData);
+		void LoadedFromData(SV loadedData,bool force);
 
 		#endregion メソッド
 	}

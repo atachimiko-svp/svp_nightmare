@@ -36,7 +36,7 @@ namespace Sakura.Contrib
 		/// <summary>
 		/// IsLoadedプロパティが読み込まれたときに発生するイベント
 		/// </summary>
-		public event EventHandler Loaded;
+		public event EventHandler<LazyItemLoadedEventArgs> Loaded;
 
 		#endregion イベント
 
@@ -48,9 +48,14 @@ namespace Sakura.Contrib
 			get
 			{
 				if (!_IsLoaded)
-					OnLoaded();
+					OnLoaded(false);
 				_IsLoaded = true;
 				return true;
+			}
+
+			private set
+			{
+				_IsLoaded = value;
 			}
 		}
 
@@ -73,7 +78,15 @@ namespace Sakura.Contrib
 		/// DataSourceが遅延読込を行いサーバから取得したデータを設定するために呼び出します。
 		/// </summary>
 		/// <param name="loadedData"></param>
-		public abstract void LoadedFromData(T loadedData);
+		public abstract void LoadedFromData(T loadedData, bool force);
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public void Reload(bool force = false)
+		{
+			OnLoaded(force);
+		}
 
 		/// <summary>
 		/// 
@@ -82,16 +95,17 @@ namespace Sakura.Contrib
 		{
 			if (this._IsLoaded)
 			{
-				this._IsLoaded = false;
+				this.IsLoaded = false;
 			}
 		}
 
-		private void OnLoaded()
+		private void OnLoaded(bool force)
 		{
 			var h = this.Loaded;
 			if (h != null)
 			{
-				h(this, EventArgs.Empty);
+				var args = new LazyItemLoadedEventArgs { ForceLoadFlag = force };
+				h(this, args);
 			}
 		}
 

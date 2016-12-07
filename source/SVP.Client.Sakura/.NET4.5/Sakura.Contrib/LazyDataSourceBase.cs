@@ -24,7 +24,7 @@ namespace Sakura.Contrib
 
 		DispatcherCollection<T> _Items;
 
-		ObservableSynchronizedCollection<EventListener<EventHandler>> _Listeners = new ObservableSynchronizedCollection<EventListener<EventHandler>>();
+		ObservableSynchronizedCollection<EventListener<EventHandler<LazyItemLoadedEventArgs>>> _Listeners = new ObservableSynchronizedCollection<EventListener<EventHandler<LazyItemLoadedEventArgs>>>();
 
 		#endregion フィールド
 
@@ -56,10 +56,10 @@ namespace Sakura.Contrib
 		/// <param name="item"></param>
 		public void AddItem(T item)
 		{
-			var listener = new EventListener<EventHandler>(
+			var listener = new EventListener<EventHandler<LazyItemLoadedEventArgs>>(
 				h => item.Loaded += h,
 				h => item.Loaded -= h,
-				(sender, e) => { OnLazyDataLoad((T)sender); }
+				(sender, e) => { OnLazyDataLoad((T)sender,e.ForceLoadFlag); }
 			);
 			_Listeners.Add(listener);
 
@@ -83,7 +83,7 @@ namespace Sakura.Contrib
 		/// ※ネットワークの向こうのデータをとってくるイメージ
 		/// </summary>
 		/// <returns></returns>
-		protected virtual async Task<SV> GetData()
+		protected virtual async Task<SV> GetData(T sender, bool force)
 		{
 			return await Task.Delay(0).ContinueWith(_ =>
 			{
@@ -91,14 +91,14 @@ namespace Sakura.Contrib
 			});
 		}
 
-		async void OnLazyDataLoad(T sender)
+		async void OnLazyDataLoad(T sender,bool force)
 		{
 			//Console.WriteLine("OnPropertyChangedIsLoaded " + sender.IdText);
 
 			await DispatcherHelper.UIDispatcher.InvokeAsync(async () =>
 			{
-				SV results = await this.GetData();
-				sender.LoadedFromData(results);
+				SV results = await this.GetData(sender, force);
+				sender.LoadedFromData(results, force);
 			});
 		}
 

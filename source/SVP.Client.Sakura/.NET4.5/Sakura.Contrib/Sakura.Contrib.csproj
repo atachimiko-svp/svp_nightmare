@@ -64,6 +64,7 @@
     <Compile Include="Infrastructures\ILazyLoadingItem.cs" />
     <Compile Include="LazyDataSourceBase.cs" />
     <Compile Include="LazyItemBase.cs" />
+    <Compile Include="LazyItemLoadedEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

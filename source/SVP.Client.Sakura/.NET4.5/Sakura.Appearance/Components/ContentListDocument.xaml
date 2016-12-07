@@ -3,7 +3,10 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+    xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
     xmlns:local="clr-namespace:Sakura.View.Components"
+    xmlns:localBv="clr-namespace:Sakura.View.Behaviors"
     xmlns:localData="clr-namespace:Sakura.Applus.DataSource;assembly=Sakura.Applus"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="http://www.quickzip.org/UserControls"
@@ -16,7 +19,13 @@
             x:Name="listView"
             uc:SelectionHelper.EnableSelection="True"
             ItemsSource="{Binding Items}"
-            Style="{x:Null}">
+            Style="{x:Null}"
+            VirtualizingPanel.ScrollUnit="Pixel"
+            VirtualizingStackPanel.IsVirtualizing="True"
+            VirtualizingStackPanel.VirtualizationMode="Recycling">
+            <i:Interaction.Behaviors>
+                <localBv:AutomaticUnloadIndivisualBehavior />
+            </i:Interaction.Behaviors>
             <ListView.Resources>
                 <ResourceDictionary>
                     <ResourceDictionary.MergedDictionaries>

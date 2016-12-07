@@ -18,15 +18,23 @@ namespace Sakura.Applus.DataSource
 
 		#region フィールド
 
+		/// <summary>
+		/// 画像のサムネイルビットマップ
+		/// </summary>
 		BitmapSource _Thumbnail;
+
+		/// <summary>
+		/// 画像のタイトル
+		/// </summary>
 		string _Title;
+
 		/// <summary>
 		/// 画像のキャッシュを行ったかどうかのフラグ
 		/// </summary>
 		/// <remarks>
 		/// 読み込みに失敗していても、このフラグをTrueに設定すべきです。
 		/// </remarks>
-		private bool IsCached = false;
+		public bool IsCached = false;
 
 		#endregion フィールド
 
@@ -62,34 +70,26 @@ namespace Sakura.Applus.DataSource
 
 		#region メソッド
 
-		public override void LoadedFromData(ServerData loadedData)
+		public override void LoadedFromData(ServerData loadedData, bool force)
 		{
 			if (IsCached) return; // 読み込み済みの場合は、再度読み込みは行わない。
 			IsCached = true;
 
-			
-			using (MemoryStream ms = new MemoryStream(loadedData.ThumbnailStream))
+			if (loadedData.UpdateFlag && loadedData.ThumbnailBytes != null)
 			{
-				// めちゃくちゃメモリ使う(12MB)
-				//var x = BitmapFrame.Create(data);
-				//WriteableBitmap wbmp = new WriteableBitmap(x);
-				//wbmp.Freeze();
-
-				// 2MBくらい
-				ms.Seek(0, SeekOrigin.Begin); // 念のためカーソル位置を先頭番地に移動
-				BitmapImage bi = new BitmapImage();
-				bi.BeginInit();
-				bi.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
-				bi.CacheOption = BitmapCacheOption.OnLoad;
-				bi.StreamSource = ms;
-				bi.EndInit();
-				bi.Freeze();
-				this.Thumbnail = bi;
-
-				// ファイル直接指定(ファイルサイズとほぼ一致)
-				//   ただし、ファイルロックする。
-				//this.Thumbnail = new BitmapImage(new Uri(@"C:\016_47743597_p7_master1200.jpg")); ;
-
+				using (MemoryStream ms = new MemoryStream(loadedData.ThumbnailBytes))
+				{
+					ms.Seek(0, SeekOrigin.Begin); // 念のためカーソル位置を先頭番地に移動
+					BitmapImage bi = new BitmapImage();
+					bi.BeginInit();
+					bi.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
+					bi.CacheOption = BitmapCacheOption.OnLoad;
+					bi.DecodePixelHeight = 80;
+					bi.StreamSource = ms;
+					bi.EndInit();
+					bi.Freeze();
+					this.Thumbnail = bi;
+				}
 			}
 			
 		}
@@ -97,6 +97,8 @@ namespace Sakura.Applus.DataSource
 		public override void Unload()
 		{
 			this.Thumbnail = null;
+			this.IsCached = false;
+			base.Unload();
 		}
 
 		#endregion メソッド
@@ -108,21 +110,44 @@ namespace Sakura.Applus.DataSource
 
 		#region メソッド
 
-		protected override async Task<ServerData> GetData()
+		protected override async Task<ServerData> GetData(ImageLazyItem sender, bool force)
 		{
-			return await Task.Delay(0).ContinueWith(_ =>
+			bool isLoadServer = false;
+
+			// [サーバからのデータ取得条件]
+			// サーバからデータロードしていない or 
+			// サーバからデータロードしているが強制読み込み or
+			// サーバからデータロードしているが、キャッシュクリアされている
+			if (!sender.IsCached) isLoadServer = true;
+			if (sender.IsLoaded && force) isLoadServer = true;
+			if (sender.IsLoaded && sender.IsCached) isLoadServer = true;
+
+			if (isLoadServer)
+			{
+				return await Task.Delay(0).ContinueWith(_ =>
+				{
+					var rmd = new Random();
+					Thread.Sleep(rmd.Next(200, 1000));
+
+				return new ServerData
+					{
+						UpdateFlag = true,
+						ThumbnailBytes = File.ReadAllBytes(@"C:\016_47743597_p7_master1200.jpg")
+					};
+				});
+			}else
+			{
+				return await Task.Delay(0).ContinueWith(_ =>
 			{
 				var rmd = new Random();
-				Thread.Sleep(rmd.Next(200, 1000));
+					//Thread.Sleep(rmd.Next(200, 1000));
 
-				//Console.WriteLine("画像の読み込みを行います");
-
-				
-				return new ServerData
+					return new ServerData
 				{
-					ThumbnailStream = File.ReadAllBytes(@"C:\016_47743597_p7_master1200.jpg")
+					UpdateFlag = false,
 				};
 			});
+			}
 		}
 
 		#endregion メソッド
@@ -134,6 +159,11 @@ namespace Sakura.Applus.DataSource
 	/// リファクタリング対象
 	/// </summary>
 	public class ServerData {
-		public byte[] ThumbnailStream;
+		public byte[] ThumbnailBytes;
+
+		/// <summary>
+		/// サーバから最新情報を取得したかどうかを示すフラグ
+		/// </summary>
+		public bool UpdateFlag;
 	}
 }

@@ -7,11 +7,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 
 namespace Sakura.Data.ViewModel
 {
 	public class ContentListViewModel : SDocumentViewModelBase
 	{
+		
 
 		#region フィールド
 
@@ -51,8 +55,8 @@ namespace Sakura.Data.ViewModel
 
 		public async void ClearBitmapData()
 		{
-			dynamic dbgobj = ApplicationContext.ContentRepository;
-			dbgobj.__DEBUG_GC();
+			// デバッグコードの残骸
+			// メソッドは削除します。
 		}
 
 		public override void OnActiveViewModel(string perspectiveName)

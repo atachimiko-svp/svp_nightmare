@@ -110,6 +110,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Behaviors\AutomaticUnloadIndivisualBehavior.cs" />
     <Compile Include="Components\ContentListDocument.xaml.cs">
       <DependentUpon>ContentListDocument.xaml</DependentUpon>
     </Compile>

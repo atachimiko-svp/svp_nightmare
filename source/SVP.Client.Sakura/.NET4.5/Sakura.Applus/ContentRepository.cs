@@ -27,7 +27,7 @@ namespace Sakura.Applus
 
 		public ContentRepository()
 		{
-			for (int i = 1; i <= 2000; i++)
+			for (int i = 1; i <= 300; i++)
 			{
 				this._DataSource.AddItem(new ImageLazyItem { Title = i.ToString() });
 			}
@@ -72,14 +72,6 @@ namespace Sakura.Applus
 
 
 		#region メソッド
-
-		public void __DEBUG_GC()
-		{
-			foreach (var prop in _DataSource.Items)
-			{
-				prop.Thumbnail = null;
-			}
-		}
 
 		public void NextContent()
 		{
