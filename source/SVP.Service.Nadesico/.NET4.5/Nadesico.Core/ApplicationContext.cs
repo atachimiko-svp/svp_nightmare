@@ -11,6 +11,7 @@ namespace Nadesico.Core
 	public static class ApplicationContext
 	{
 
+
 		#region フィールド
 
 		private static IApplicationContext Instance;
@@ -28,6 +29,9 @@ namespace Nadesico.Core
 		/// アプリケーションのアセンブリ情報
 		/// </summary>
 		public static System.Diagnostics.FileVersionInfo ApplicationFileVersionInfo { get { return Instance.ApplicationFileVersionInfo; } }
+
+
+		public static Dictionary<string, long> DataTransportSessionKeyMap { get { return Instance.DataTransportSessionKeyMap; } }
 
 		#endregion プロパティ
 
@@ -54,5 +58,6 @@ namespace Nadesico.Core
 		}
 
 		#endregion メソッド
+
 	}
 }

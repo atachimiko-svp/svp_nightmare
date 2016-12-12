@@ -14,6 +14,7 @@ using Nadesico.Gateway;
 using Nadesico.Model.Repository;
 using System.Data.Entity.Validation;
 using System.Collections;
+using Nadesico.Core;
 
 namespace Nadesico.Service
 {
@@ -38,6 +39,7 @@ namespace Nadesico.Service
 			// マッピングするクラスの紐付け設定
 			MapperConfig = new MapperConfiguration(cfg =>
 			{
+				cfg.CreateMap<Content, SVP.CIL.Domain.Content>().ReverseMap();
 				cfg.CreateMap<Category, SVP.CIL.Domain.Category>().ReverseMap();
 				cfg.CreateMap<Label, SVP.CIL.Domain.Label>().ReverseMap();
 				cfg.CreateMap<Tag, SVP.CIL.Domain.Tag>().ReverseMap();
@@ -270,6 +272,15 @@ namespace Nadesico.Service
 		public void Logout()
 		{
 			LOG.Debug("Execute API Logout");
+		}
+
+		public ResponseSendContentData SendContentData(RequestSendContentData reqparam)
+		{
+			var sessionId = Guid.NewGuid().ToString();
+			ApplicationContext.DataTransportSessionKeyMap.Add(sessionId, reqparam.ContentId);
+			var resp = new ResponseSendContentData();
+			resp.SessionId = sessionId;
+			return resp;
 		}
 
 		public ResponseTagCrud TagCrud(RequestTagCrud reqparam)
@@ -599,5 +610,6 @@ namespace Nadesico.Service
 		}
 
 		#endregion メソッド
+
 	}
 }

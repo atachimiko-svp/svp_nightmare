@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sakura.Core.Infrastructures
 {
-	public delegate void ActiveViewModelEventHandler(string perspectiveName);
+	public delegate void ActiveViewModelEventHandler(ActiveViewModelEventArgs args);
 
 	public delegate void DeActiveViewModelEventHandler(string perspectiveName);
 
@@ -27,9 +27,15 @@ namespace Sakura.Core.Infrastructures
 
 		#region メソッド
 
-		void ChangePerspective(string perspectiveName);
+		void ChangePerspective(string perspectiveName, object param = null);
 
 		#endregion メソッド
 
+	}
+
+	public class ActiveViewModelEventArgs : EventArgs
+	{
+		public string PerspectiveName { get; set; }
+		public object Param { get; set; }
 	}
 }

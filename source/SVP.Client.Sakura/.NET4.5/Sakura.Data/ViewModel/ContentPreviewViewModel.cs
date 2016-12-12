@@ -1,7 +1,10 @@
 ﻿using Akalib.Wpf;
+using ImpromptuInterface;
 using log4net;
 using Sakura.Core;
+using Sakura.Core.Infrastructures;
 using Sakura.Core.Presentation;
+using Sakura.Data.Infrastructures;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,9 +23,13 @@ namespace Sakura.Data.ViewModel
 	{
 
 
-		#region フィールド
+		#region Public フィールド
 
 		public string _Title = "TestTitle";
+
+		#endregion Public フィールド
+
+		#region Private フィールド
 
 		/// <summary>
 		/// 画像の拡大縮小時の、リサイズ倍率
@@ -54,7 +61,7 @@ namespace Sakura.Data.ViewModel
 		/// <summary>
 		/// 画像フィットモード
 		/// </summary>
-		bool _EnabledImageFitMode = false;
+		bool _EnabledImageFitMode = true;
 
 		/// <summary>
 		/// 表示する画像データ
@@ -88,6 +95,8 @@ namespace Sakura.Data.ViewModel
 
 		bool _IsInitialized = false;
 
+		IContentLazyItem _PreviewItem;
+
 		/// <summary>
 		///  キャンバス内でのドラッグ操作中かどうかを示すフラグです。
 		/// </summary>
@@ -97,9 +106,9 @@ namespace Sakura.Data.ViewModel
 
 		double oldImageOffsetY = 0.0;
 
-		#endregion フィールド
+		#endregion Private フィールド
 
-		#region プロパティ
+		#region Public プロパティ
 
 		/// <summary>
 		/// 画像フィットモードを取得します
@@ -234,37 +243,9 @@ namespace Sakura.Data.ViewModel
 
 		public string Title { get { return _Title; } }
 
-		#endregion プロパティ
+		#endregion Public プロパティ
 
-		#region メソッド
-
-		/// <summary>
-		/// [デバッグ用]
-		/// </summary>
-		public void __DebugImageLoad()
-		{
-			MemoryStream data = new MemoryStream(File.ReadAllBytes(@"C:\016_47743597_p7_master1200_72dpi.jpg"));
-			//MemoryStream data = new MemoryStream(File.ReadAllBytes(@"C:\016_47743597_p7_master1200_200dpi.jpg"));
-			//MemoryStream data = new MemoryStream(File.ReadAllBytes(@"C:\016_47743597_p7_master1200.jpg"));
-			var x = BitmapFrame.Create(data);
-			WriteableBitmap wbmp = new WriteableBitmap(x);
-
-			this.ImageBitmap = wbmp;
-
-			// 画像サイズ調整
-			if (this.EnabledImageFitMode)
-			{
-				FittingViewSize(this._ImageCanvasSize.Width, this._ImageCanvasSize.Height);
-			}
-			else
-			{
-				this.ImageStretch = Stretch.None;
-
-				UpdateImageTransform();
-			}
-		}
-
-
+		#region Public メソッド
 
 		/// <summary>
 		/// スケーリングを使用し、リサイズした場合の画像サイズを計算します
@@ -288,7 +269,6 @@ namespace Sakura.Data.ViewModel
 			imageControl.ReleaseMouseCapture();
 			IsImageCanvasDragging = false;
 		}
-
 
 		/// <summary>
 		/// 画像のマウスドラッグ中に、画像の位置をドラッグに合わせて変更する
@@ -315,6 +295,160 @@ namespace Sakura.Data.ViewModel
 				this.ImageOffsetY = oldImageOffsetY - diffY;
 			}
 		}
+
+		/// <summary>
+		/// 画像表示キャンバスに合わせて画像の読み込みを行います
+		/// </summary>
+		/// <param name="e"></param>
+		public async void InitializeLoad(RoutedEventArgs e)
+		{
+			var imageControl = e.Source as Image;
+			dynamic prop = imageControl.Parent;
+			var grid = prop.Parent as Grid;
+			if (grid != null)
+			{
+				this._ImageCanvasSize.Height = grid.ActualHeight;
+				this._ImageCanvasSize.Width = grid.ActualWidth;
+			}
+
+			// 初期化時に表示するコンテントが設定してある場合、コンテントのビットマップを取得する。
+			if (this._PreviewItem != null)
+				await LoadPreviewBitmapAsync();
+
+			_IsInitialized = true;
+		}
+
+		public override void OnActiveViewModel(string perspectiveName, object param)
+		{
+			LOG.DebugFormat("Execute {0}", this.CurrentPerspectiveName);
+
+			if (param != null)
+			{
+				var myInterface = param.ActLike<IPerspectiveP2Arg>();
+				LOG.DebugFormat("    ContentId={0}", myInterface.Content.ContentId);
+
+				if (_PreviewItem != null) _PreviewItem.ClearPreviewBitmap();
+				_PreviewItem = myInterface.Content;
+			}
+		}
+
+		/// <summary>
+		///     キャンバスのMouseLeftButtonDownイベントのハンドラ
+		/// </summary>
+		/// <param name="e"></param>
+		public async void OnCanvasMouseLeftButtonDown(MouseButtonEventArgs e)
+		{
+			// ドラッグ開始
+			var imageControl = e.Source as Image;
+
+			IsImageCanvasDragging = true;
+
+			// ドラッグ開始時のImageコントロールのオフセット値を保持
+			oldImageOffsetX = ImageOffsetX;
+			oldImageOffsetY = ImageOffsetY;
+
+			var @scroll = imageControl.Parent.FindAncestor<ScrollViewer>();
+			Point pt = Mouse.GetPosition(@scroll);
+			_dragOffset = pt;
+			imageControl.CaptureMouse();
+		}
+
+		/// <summary>
+		///     キャンバスのMouseLeftButtonUpイベントのハンドラ
+		/// </summary>
+		/// <param name="e"></param>
+		public async void OnCanvasMouseLeftButtonUp(MouseButtonEventArgs e)
+		{
+			// ドラッグ終了
+			var imageControl = e.Source as Image;
+			imageControl.ReleaseMouseCapture();
+			IsImageCanvasDragging = false;
+		}
+
+		/// <summary>
+		///     キャンバスのMouseMoveイベントのハンドラ
+		/// </summary>
+		/// <param name="e"></param>
+		public async void OnCanvasMouseMove(MouseEventArgs e)
+		{
+			// キャンバスのドラッグ中ならば、
+			// 現在のマウス座標との差分を取って、Imageコントロールを表示する位置をScrollViewerに設定する。
+
+			if (IsImageCanvasDragging)
+			{
+				var imageControl = e.Source as Image;
+
+				var @scroll = imageControl.Parent.FindAncestor<ScrollViewer>();
+				Point pt = Mouse.GetPosition(@scroll);
+				double diffX = pt.X - _dragOffset.X;
+				double diffY = pt.Y - _dragOffset.Y;
+
+
+				// ImageOffsetX/ImageOffsetYはMVVMで
+				// ScrollViewerのOffset値とバインドしている。
+				this.ImageOffsetX = oldImageOffsetX - diffX;
+				this.ImageOffsetY = oldImageOffsetY - diffY;
+			}
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="e"></param>
+		public async void OnCanvasSizeChanged(SizeChangedEventArgs e)
+		{
+			var imageControl = e.Source as Image;
+			dynamic prop = imageControl.Parent;
+			var grid = prop.Parent as Grid;
+			if (grid != null)
+			{
+				this._ImageCanvasSize.Height = grid.ActualHeight;
+				this._ImageCanvasSize.Width = grid.ActualWidth;
+			}
+		}
+
+		public override void OnDeActiveViewModel(string perspectiveName)
+		{
+			LOG.DebugFormat("Execute {0}", this.CurrentPerspectiveName);
+
+			if (_PreviewItem != null) _PreviewItem.ClearPreviewBitmap();
+			this.ImageBitmap = null;
+		}
+
+		public async void OnGridLoaded(RoutedEventArgs e)
+		{
+			var gridControl = e.Source as Grid;
+			//LOG.InfoFormat("Gridのサイズ {0} {1}", gridControl.ActualWidth, gridControl.ActualHeight);
+
+			// コンテナが設置された際のコンテナのサイズをActualWidth/ActualHeightで取得可能。
+			this._ImageCanvasSize = new Size(gridControl.ActualWidth, gridControl.ActualHeight);
+			//this.EnabledImageFitMode = true; // ←変数は、画面出力前に外部から設定してください。
+
+			if (ImageBitmap != null && this.EnabledImageFitMode) // 画像が読み込み済みの場合は、画像を表示領域にフィットさせる。
+			{
+				FittingViewSize(gridControl.ActualWidth, gridControl.ActualHeight);
+			}
+		}
+
+		public async void OnGridSizeChanged(SizeChangedEventArgs e)
+		{
+			// リサイズ後のコンテナのサイズを取得
+			double lastHeight = e.NewSize.Height;
+			double lastWidth = e.NewSize.Width;
+
+			//LOG.InfoFormat("サイズ変更イベント2 Height={0} Width={1}", lastHeight, lastWidth);
+
+			this._ImageCanvasSize = new Size(lastWidth, lastHeight);
+
+			if (ImageBitmap != null && this.EnabledImageFitMode) // 画像が読み込み済みの場合は、画像を表示領域にフィットさせる。
+			{
+				FittingViewSize(lastWidth, lastHeight);
+			}
+		}
+
+		#endregion Public メソッド
+
+		#region Private メソッド
 
 		/// <summary>
 		/// 指定した領域内に画像が表示されるように画像の縮小スケールを設定します
@@ -379,6 +513,31 @@ namespace Sakura.Data.ViewModel
 			UpdateImageTransform();
 		}
 
+		/// <summary>
+		/// サーバからコンテントのビットマップを取得する
+		/// </summary>
+		async Task LoadPreviewBitmapAsync()
+		{
+			// privateなのでGuardは実装しない
+
+			await ApplicationContext.ContentRepository.LoadContentData(this._PreviewItem);
+
+			if (this._PreviewItem.PreviewBitmap != null)
+			{
+				this.ImageBitmap = this._PreviewItem.PreviewBitmap;
+
+				if (this.EnabledImageFitMode)
+				{
+					FittingViewSize(this._ImageCanvasSize.Width, this._ImageCanvasSize.Height);
+				}
+				else
+				{
+					this.ImageStretch = Stretch.None;
+
+					UpdateImageTransform();
+				}
+			}
+		}
 
 		/// <summary>
 		/// 
@@ -395,147 +554,7 @@ namespace Sakura.Data.ViewModel
 			this.ImageTransform = scaleTransform;
 		}
 
-		public async void OnGridSizeChanged(SizeChangedEventArgs e)
-		{
-			// リサイズ後のコンテナのサイズを取得
-			double lastHeight = e.NewSize.Height;
-			double lastWidth = e.NewSize.Width;
-
-			//LOG.InfoFormat("サイズ変更イベント2 Height={0} Width={1}", lastHeight, lastWidth);
-
-			this._ImageCanvasSize = new Size(lastWidth, lastHeight);
-
-			if (ImageBitmap != null && this.EnabledImageFitMode) // 画像が読み込み済みの場合は、画像を表示領域にフィットさせる。
-			{
-				FittingViewSize(lastWidth, lastHeight);
-			}
-		}
-
-
-		public async void OnGridLoaded(RoutedEventArgs e)
-		{
-			var gridControl = e.Source as Grid;
-			//LOG.InfoFormat("ImageGridLoadedCommandコマンドの呼び出し");
-			//LOG.InfoFormat("Gridのサイズ {0} {1}", gridControl.ActualWidth, gridControl.ActualHeight);
-
-			// コンテナが設置された際のコンテナのサイズをActualWidth/ActualHeightで取得可能。
-			this._ImageCanvasSize = new Size(gridControl.ActualWidth, gridControl.ActualHeight);
-			//this.EnabledImageFitMode = true; // ←変数は、画面出力前に外部から設定してください。
-
-			if (ImageBitmap != null && this.EnabledImageFitMode) // 画像が読み込み済みの場合は、画像を表示領域にフィットさせる。
-			{
-				FittingViewSize(gridControl.ActualWidth, gridControl.ActualHeight);
-			}
-		}
-
-		/// <summary>
-		/// 画像表示キャンバスに合わせて画像の読み込みを行います
-		/// </summary>
-		/// <param name="e"></param>
-		public async void InitializeLoad(RoutedEventArgs e)
-		{
-			var imageControl = e.Source as Image;
-			dynamic prop = imageControl.Parent;
-			var grid = prop.Parent as Grid;
-			if (grid != null)
-			{
-				this._ImageCanvasSize.Height = grid.ActualHeight;
-				this._ImageCanvasSize.Width = grid.ActualWidth;
-			}
-
-			// 画面表示時、画像ファイルの読み込みを行う場合の処理
-			//if (this.PreviewImageArtifact != null)
-			//	await LoadImageAsync(this.PreviewImageArtifact.Id); // コンポーネント表示時に表示される画像の読み込み
-			__DebugImageLoad();
-
-			_IsInitialized = true;
-		}
-
-		public override void OnActiveViewModel(string perspectiveName)
-		{
-			LOG.DebugFormat("Execute {0}", this.CurrentPerspectiveName);
-		}
-
-		/// <summary>
-		///     キャンバスのMouseLeftButtonDownイベントのハンドラ
-		/// </summary>
-		/// <param name="e"></param>
-		public async void OnCanvasMouseLeftButtonDown(MouseButtonEventArgs e)
-		{
-			// ドラッグ開始
-			var imageControl = e.Source as Image;
-
-			IsImageCanvasDragging = true;
-
-			// ドラッグ開始時のImageコントロールのオフセット値を保持
-			oldImageOffsetX = ImageOffsetX;
-			oldImageOffsetY = ImageOffsetY;
-
-			var @scroll = imageControl.Parent.FindAncestor<ScrollViewer>();
-			Point pt = Mouse.GetPosition(@scroll);
-			_dragOffset = pt;
-			imageControl.CaptureMouse();
-		}
-
-		/// <summary>
-		///     キャンバスのMouseLeftButtonUpイベントのハンドラ
-		/// </summary>
-		/// <param name="e"></param>
-		public async void OnCanvasMouseLeftButtonUp(MouseButtonEventArgs e)
-		{
-			// ドラッグ終了
-			var imageControl = e.Source as Image;
-			imageControl.ReleaseMouseCapture();
-			IsImageCanvasDragging = false;
-		}
-		/// <summary>
-		///     キャンバスのMouseMoveイベントのハンドラ
-		/// </summary>
-		/// <param name="e"></param>
-		public async void OnCanvasMouseMove(MouseEventArgs e)
-		{
-			// キャンバスのドラッグ中ならば、
-			// 現在のマウス座標との差分を取って、Imageコントロールを表示する位置をScrollViewerに設定する。
-
-			if (IsImageCanvasDragging)
-			{
-				var imageControl = e.Source as Image;
-
-				var @scroll = imageControl.Parent.FindAncestor<ScrollViewer>();
-				Point pt = Mouse.GetPosition(@scroll);
-				double diffX = pt.X - _dragOffset.X;
-				double diffY = pt.Y - _dragOffset.Y;
-
-
-				// ImageOffsetX/ImageOffsetYはMVVMで
-				// ScrollViewerのOffset値とバインドしている。
-				this.ImageOffsetX = oldImageOffsetX - diffX;
-				this.ImageOffsetY = oldImageOffsetY - diffY;
-			}
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="e"></param>
-		public async void OnCanvasSizeChanged(SizeChangedEventArgs e)
-		{
-			var imageControl = e.Source as Image;
-			dynamic prop = imageControl.Parent;
-			var grid = prop.Parent as Grid;
-			if (grid != null)
-			{
-				this._ImageCanvasSize.Height = grid.ActualHeight;
-				this._ImageCanvasSize.Width = grid.ActualWidth;
-			}
-		}
-
-		public override void OnDeActiveViewModel(string perspectiveName)
-		{
-			LOG.DebugFormat("Execute {0}", this.CurrentPerspectiveName);
-		}
-
-		#endregion メソッド
+		#endregion Private メソッド
 
 	}
 }

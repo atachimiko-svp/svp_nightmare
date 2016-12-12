@@ -1,4 +1,5 @@
 ﻿using Livet;
+using Sakura.Core;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -61,7 +62,6 @@ namespace Sakura.Data.Struction
 
 		#endregion コンストラクタ
 
-
 		#region プロパティ
 
 		/// <summary>
@@ -117,10 +117,14 @@ namespace Sakura.Data.Struction
 		{
 			// サーバからデータを取得してきた、というイメージ。
 			// サーバからは、現在のタグの小階層タグの一覧とその小階層が更に小階層を持つかどうかのフラグを取得するような実装とする。
-
+			for(int i = 0; i < 10; i++)
+			{
+				_children.Add(new ServerLabelTestData { Id = i, Name = "StarWars " + i });
+			}
 		}
 
 		#endregion メソッド
+
 	}
 
 	/// <summary>

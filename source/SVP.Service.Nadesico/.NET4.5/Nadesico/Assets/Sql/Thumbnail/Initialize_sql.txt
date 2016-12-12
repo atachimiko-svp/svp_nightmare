@@ -1,0 +1,13 @@
+﻿CREATE TABLE IF NOT EXISTS `svp_ServerPld`
+(
+	`Id` INTEGER PRIMARY KEY AUTOINCREMENT,
+	`Key` TEXT NOT NULL,
+	`Value` TEXT
+);
+
+CREATE TABLE IF NOT	EXISTS [svp_Thumbnail]
+(
+	[Id] INTEGER PRIMARY KEY AUTOINCREMENT,
+	[ThumbnailKey] TEXT,
+	[BitmapBytes] BLOB
+);

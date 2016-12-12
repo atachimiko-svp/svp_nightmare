@@ -42,14 +42,19 @@ namespace Nadesico.Core.Infrastructure
 		/// </summary>
 		string TemporaryDirectoryPath { get; }
 
+		/// <summary>
+		/// 
+		/// </summary>
+		Dictionary<string, long> DataTransportSessionKeyMap { get; }
+
 		#endregion プロパティ
 
-		#region メソッド
+			#region メソッド
 
-		/// <summary>
-		/// 初期化処理を実行します
-		/// </summary>
-		/// <param name="param">実行する初期化処理の種類</param>
+			/// <summary>
+			/// 初期化処理を実行します
+			/// </summary>
+			/// <param name="param">実行する初期化処理の種類</param>
 		void Initialize(InitializeParamType param);
 
 		/// <summary>

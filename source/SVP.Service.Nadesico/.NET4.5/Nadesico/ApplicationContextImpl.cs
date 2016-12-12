@@ -22,6 +22,7 @@ namespace Nadesico
 	public class ApplicationContextImpl : IApplicationContext
 	{
 
+
 		#region フィールド
 
 		private static ApplicationContextImpl instance;
@@ -42,6 +43,11 @@ namespace Nadesico
 		/// .NETアプリケーションのコンテキスト
 		/// </summary>
 		private Application _Application;
+
+		/// <summary>
+		/// データ転送用のセッションキー辞書
+		/// </summary>
+		private Dictionary<string, long> _DataTransportSessionKeyMap = new Dictionary<string, long>();
 
 		/// <summary>
 		/// アプリケーションの処理計測を行うためのタイマー
@@ -76,7 +82,8 @@ namespace Nadesico
 
 			this.ApplicationFileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location);
 
-			CreateSettingSQLite();
+			SettingAppDbContextSQLite();
+			SettingThumbnailDbContextSQLite();
 		}
 
 		#endregion コンストラクタ
@@ -125,6 +132,11 @@ namespace Nadesico
 		}
 
 		/// <summary>
+		/// データ転送のためのTCPソケット受付用のセッションキー辞書
+		/// </summary>
+		public Dictionary<string, long> DataTransportSessionKeyMap { get { return _DataTransportSessionKeyMap; } }
+
+		/// <summary>
 		/// アプリケーションが一時ファイルを保存するディレクトリを取得します。
 		/// </summary>
 		public string TemporaryDirectoryPath
@@ -133,7 +145,6 @@ namespace Nadesico
 		}
 
 		#endregion プロパティ
-
 
 		#region メソッド
 
@@ -176,7 +187,14 @@ namespace Nadesico
 					break;
 
 				case InitializeParamType.DATABASE:
-					InitializeDatabase();
+					using (var dbc = new AppDbContext())
+					{
+						InitializeDatabase(dbc,"Nadesico");
+					}
+					using (var dbc = new ThumbnailDbContext())
+					{
+						InitializeDatabase(dbc, "Thumbnail");
+					}
 					break;
 			}
 		}
@@ -216,19 +234,9 @@ namespace Nadesico
 		}
 
 		/// <summary>
-		/// SQLiteを使用するための設定を読み込みます
-		/// </summary>
-		void CreateSettingSQLite()
-		{
-			SQLiteConnectionStringBuilder builder_AppDb = new SQLiteConnectionStringBuilder();
-			builder_AppDb.DataSource = Path.Combine(DatabaseDirectoryPath, "nadesico.db");
-			AppDbContext.SDbConnection = builder_AppDb;
-		}
-
-		/// <summary>
 		/// データベースに関する初期化処理
 		/// </summary>
-		private void InitializeDatabase()
+		private void InitializeDatabase(AtDbContext context, string domain)
 		{
 			ServerPld apMetadata = null;
 			bool isMigrate = false;
@@ -236,7 +244,7 @@ namespace Nadesico
 			const string appdb_structure_version_key = "APPDB_VER";
 
 			// 構造の初期化
-			using (var @dbc = new AppDbContext())
+			var @dbc = context;
 			{
 				bool isInitializeDatabase = false;
 				var @repo = new ServerPldRepository(@dbc);
@@ -256,7 +264,7 @@ namespace Nadesico
 					string sqltext = "";
 					System.Reflection.Assembly assm = System.Reflection.Assembly.GetExecutingAssembly();
 
-					using (var stream = assm.GetManifestResourceStream("Nadesico.Assets.Sql.Nadesico.Initialize_sql.txt"))
+					using (var stream = assm.GetManifestResourceStream(string.Format("Nadesico.Assets.Sql.{0}.Initialize_sql.txt", domain)))
 					{
 						using (StreamReader reader = new StreamReader(stream))
 						{
@@ -282,7 +290,7 @@ namespace Nadesico
 				do
 				{
 					currentVersion = nextVersion;
-					nextVersion = UpgradeFromResource("Nadesico", currentVersion, @dbc);
+					nextVersion = UpgradeFromResource(domain, currentVersion, @dbc);
 					if (nextVersion != currentVersion) isMigrate = true;
 				} while (nextVersion != currentVersion);
 
@@ -331,7 +339,25 @@ namespace Nadesico
 			}
 		}
 
+		/// <summary>
+		/// SQLiteを使用するための設定を読み込みます
+		/// </summary>
+		void SettingAppDbContextSQLite()
+		{
+			SQLiteConnectionStringBuilder builder_AppDb = new SQLiteConnectionStringBuilder();
+			builder_AppDb.DataSource = Path.Combine(DatabaseDirectoryPath, "nadesico.db");
+			AppDbContext.SDbConnection = builder_AppDb;
+		}
 
+		/// <summary>
+		/// SQLiteを使用するための設定を読み込みます
+		/// </summary>
+		void SettingThumbnailDbContextSQLite()
+		{
+			SQLiteConnectionStringBuilder builder_ThumbDb = new SQLiteConnectionStringBuilder();
+			builder_ThumbDb.DataSource = Path.Combine(DatabaseDirectoryPath, "thumb.db");
+			ThumbnailDbContext.SDbConnection = builder_ThumbDb;
+		}
 		/// <summary>
 		///
 		/// </summary>
@@ -383,5 +409,6 @@ namespace Nadesico
 		}
 
 		#endregion メソッド
+
 	}
 }

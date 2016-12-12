@@ -54,6 +54,7 @@
     <Compile Include="Request\RequestContentFindByCategory.cs" />
     <Compile Include="Request\RequestLabelCrud.cs" />
     <Compile Include="Request\RequestLabelLoadList.cs" />
+    <Compile Include="Request\RequestSendContentData.cs" />
     <Compile Include="Request\RequestTagCrud.cs" />
     <Compile Include="Request\RequestTagLoadList.cs" />
     <Compile Include="Request\RequestWorkspaceCrud.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="Response\ResponseCategoryLoadList.cs" />
     <Compile Include="Response\ResponseContentFindByCategory.cs" />
     <Compile Include="Response\ResponseLabelLoadList.cs" />
+    <Compile Include="Response\ResponseSendContentData.cs" />
     <Compile Include="Response\ResponseTagCrud.cs" />
     <Compile Include="Response\ResponseTagLoadList.cs" />
     <Compile Include="Response\ResponseWorkspaceCrud.cs" />

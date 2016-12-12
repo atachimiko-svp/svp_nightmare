@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<Favorites xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <folders>
+    <Folder>
+      <name>ApplicationContext</name>
+      <folders />
+      <favorites>
+        <Favorite>
+          <name>ApplicationContextImpl.cs</name>
+          <path>.NET4.5\Nadesico\ApplicationContextImpl.cs</path>
+          <absolutePath>D:\Repository\SVP_nightmare\source\SVP.Service.Nadesico\.NET4.5\Nadesico\ApplicationContextImpl.cs</absolutePath>
+        </Favorite>
+        <Favorite>
+          <name>ApplicationContext.cs</name>
+          <path>.NET4.5\Nadesico.Core\ApplicationContext.cs</path>
+          <absolutePath>D:\Repository\SVP_nightmare\source\SVP.Service.Nadesico\.NET4.5\Nadesico.Core\ApplicationContext.cs</absolutePath>
+        </Favorite>
+        <Favorite>
+          <name>IApplicationContext.cs</name>
+          <path>.NET4.5\Nadesico.Core\Infrastructure\IApplicationContext.cs</path>
+          <absolutePath>D:\Repository\SVP_nightmare\source\SVP.Service.Nadesico\.NET4.5\Nadesico.Core\Infrastructure\IApplicationContext.cs</absolutePath>
+        </Favorite>
+      </favorites>
+    </Folder>
+  </folders>
+  <favorites />
+</Favorites>

@@ -88,6 +88,7 @@
             </Metro:Flyout>
             <Metro:Flyout
                 x:Name="Flyout_FL2"
+                Width="500"
                 IsOpen="{Binding FL2ViewModel.IsOpen}"
                 Position="Left">
                 <Grid>
@@ -99,6 +100,7 @@
             </Metro:Flyout>
             <Metro:Flyout
                 x:Name="Flyout_CategoryView"
+                Width="500"
                 IsOpen="{Binding FL1ViewModel.IsOpen}"
                 Position="Left">
                 <Grid>

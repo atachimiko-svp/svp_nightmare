@@ -4,6 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+    xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
     xmlns:local="clr-namespace:Sakura.View.Components"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DesignHeight="300"
@@ -21,13 +23,47 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <TreeView ItemsSource="{Binding Artists}" Style="{StaticResource VirtualisedMetroTreeView}">
+        <TreeView ItemsSource="{Binding Items}" Style="{StaticResource VirtualisedMetroTreeView}">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="SelectedItemChanged">
+                    <l:TreeViewSetStateToSourceAction Source="{Binding SelectedLabelTreeItem}" Property="SelectedItem" />
+                    <l:LivetCallMethodAction MethodName="Selected" MethodTarget="{Binding}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
             <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate ItemsSource="{Binding Albums}">
-                    <TextBlock Text="{Binding Name}" />
+                <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                    <Button Style="{x:Null}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseDoubleClick">
+                                <l:LivetCallMethodAction
+                                    MethodName="ItemExecute"
+                                    MethodParameter="{Binding}"
+                                    MethodTarget="{Binding Path=DataContext, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <Button.Template>
+                            <ControlTemplate TargetType="{x:Type Button}">
+                                <TextBlock Text="{Binding Name}" />
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
                     <HierarchicalDataTemplate.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Title}" />
+                            <Button Style="{x:Null}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseDoubleClick">
+                                        <l:LivetCallMethodAction
+                                            MethodName="ItemExecute"
+                                            MethodParameter="{Binding}"
+                                            MethodTarget="{Binding Path=DataContext, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                                <Button.Template>
+                                    <ControlTemplate TargetType="{x:Type Button}">
+                                        <TextBlock Text="{Binding Name}" />
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
                         </DataTemplate>
                     </HierarchicalDataTemplate.ItemTemplate>
                 </HierarchicalDataTemplate>

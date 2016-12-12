@@ -32,7 +32,7 @@ namespace Sakura.Data.ViewModel
 
 		#region メソッド
 
-		public override void OnActiveViewModel(string perspectiveName)
+		public override void OnActiveViewModel(string perspectiveName, object param)
 		{
 			LOG.DebugFormat("Execute {0}", this.CurrentPerspectiveName);
 		}

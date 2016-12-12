@@ -4,15 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SVP.CIL.Domain
+namespace SVP.CIL.Response
 {
-	public class Content
+	public class ResponseSendContentData : ResponseBase
 	{
 
 		#region プロパティ
 
-		public long Id { get; set; }
-		public string Title { get; set; }
+		public string SessionId { get; set; }
 
 		#endregion プロパティ
 	}

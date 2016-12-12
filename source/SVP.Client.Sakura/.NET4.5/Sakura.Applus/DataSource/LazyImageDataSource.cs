@@ -15,18 +15,7 @@ namespace Sakura.Applus.DataSource
 	public class ImageLazyItem : LazyItemBase<ServerData>, IContentLazyItem
 	{
 
-
 		#region フィールド
-
-		/// <summary>
-		/// 画像のサムネイルビットマップ
-		/// </summary>
-		BitmapSource _Thumbnail;
-
-		/// <summary>
-		/// 画像のタイトル
-		/// </summary>
-		string _Title;
 
 		/// <summary>
 		/// 画像のキャッシュを行ったかどうかのフラグ
@@ -36,16 +25,62 @@ namespace Sakura.Applus.DataSource
 		/// </remarks>
 		public bool IsCached = false;
 
+		/// <summary>
+		/// コンテントID
+		/// </summary>
+		long _ContentId;
+
+		/// <summary>
+		/// プレビュー表示用ビットマップ
+		/// </summary>
+		BitmapSource _PreviewBitmap;
+
+		/// <summary>
+		/// 画像のサムネイルビットマップ
+		/// </summary>
+		BitmapSource _Thumbnail;
+		/// <summary>
+		/// 画像のタイトル
+		/// </summary>
+		string _Title;
+
 		#endregion フィールド
 
 
+		#region コンストラクタ
+
+		public ImageLazyItem(long contentId)
+		{
+			this.ContentId = contentId;
+		}
+
+		#endregion コンストラクタ
+
+
 		#region プロパティ
+
+		public long ContentId
+		{
+			get { return _ContentId; }
+			private set { _ContentId = value; }
+		}
+
+		public BitmapSource PreviewBitmap
+		{
+			get { return _PreviewBitmap; }
+			private set
+			{
+				if (_PreviewBitmap == value) return;
+				_PreviewBitmap = value;
+				RaisePropertyChanged();
+			}
+		}
 
 		public BitmapSource Thumbnail
 		{
 			get
 			{ return _Thumbnail; }
-			set
+			private set
 			{
 				if (_Thumbnail == value)
 					return;
@@ -69,6 +104,11 @@ namespace Sakura.Applus.DataSource
 
 
 		#region メソッド
+
+		public void ClearPreviewBitmap()
+		{
+			this.PreviewBitmap = null;
+		}
 
 		public override void LoadedFromData(ServerData loadedData, bool force)
 		{
@@ -100,6 +140,21 @@ namespace Sakura.Applus.DataSource
 			this.IsCached = false;
 			base.Unload();
 		}
+		public void UpdatePreviewBitmap(byte[] bitmapbytes)
+		{
+			using (MemoryStream ms = new MemoryStream(bitmapbytes))
+			{
+				ms.Seek(0, SeekOrigin.Begin); // 念のためカーソル位置を先頭番地に移動
+				BitmapImage bi = new BitmapImage();
+				bi.BeginInit();
+				bi.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
+				bi.CacheOption = BitmapCacheOption.OnLoad;
+				bi.StreamSource = ms;
+				bi.EndInit();
+				bi.Freeze();
+				this.PreviewBitmap = bi;
+			}
+		}
 
 		#endregion メソッド
 
@@ -107,6 +162,7 @@ namespace Sakura.Applus.DataSource
 
 	public class LazyImageDataSource : LazyDataSourceBase<ImageLazyItem, ServerData>
 	{
+
 
 		#region メソッド
 
@@ -151,6 +207,7 @@ namespace Sakura.Applus.DataSource
 		}
 
 		#endregion メソッド
+
 	}
 
 
@@ -159,11 +216,18 @@ namespace Sakura.Applus.DataSource
 	/// リファクタリング対象
 	/// </summary>
 	public class ServerData {
+
+
+		#region フィールド
+
 		public byte[] ThumbnailBytes;
 
 		/// <summary>
 		/// サーバから最新情報を取得したかどうかを示すフラグ
 		/// </summary>
 		public bool UpdateFlag;
+
+		#endregion フィールド
+
 	}
 }

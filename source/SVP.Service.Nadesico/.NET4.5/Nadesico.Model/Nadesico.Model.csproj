@@ -102,6 +102,7 @@
     <Compile Include="Repository\WorkspaceRepository.cs" />
     <Compile Include="ServerPld.cs" />
     <Compile Include="Tag.cs" />
+    <Compile Include="Thumbnail.cs" />
     <Compile Include="Workspace.cs" />
   </ItemGroup>
   <ItemGroup>

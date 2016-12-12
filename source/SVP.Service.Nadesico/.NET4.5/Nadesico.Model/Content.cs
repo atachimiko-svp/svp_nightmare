@@ -37,13 +37,15 @@ namespace Nadesico.Model
 
 		#region プロパティ
 
+		public virtual FileMappingInfo FileMappingInfo { get; set; }
+
 		public bool ArchiveFlag { get; set; }
 
 		public DateTime? AttachCategoryDate { get; set; }
 
 		public string Caption { get; set; }
 
-		public Category Category { get; set; }
+		public virtual Category Category { get; set; }
 
 		public string Comment { get; set; }
 

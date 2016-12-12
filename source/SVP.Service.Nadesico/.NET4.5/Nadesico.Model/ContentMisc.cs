@@ -10,7 +10,7 @@ namespace Nadesico.Model
 	/// <summary>
 	/// 
 	/// </summary>
-	[Table("scp_Content_Misc")]
+	[Table("svp_Content_Misc")]
 	public class ContentMisc : Content
 	{
 	}

@@ -137,8 +137,7 @@ namespace Nadesico.Gateway
 				return new System.Data.Entity.Validation.DbEntityValidationResult(entityEntry, list);
 			}
 
-
-				return base.ValidateEntity(entityEntry, items);
+			return base.ValidateEntity(entityEntry, items);
 		}
 
 		#endregion メソッド

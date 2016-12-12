@@ -4,16 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SVP.CIL.Domain
+namespace SVP.CIL.Request
 {
-	public class Content
+	public class RequestSendContentData
 	{
+
 
 		#region プロパティ
 
-		public long Id { get; set; }
-		public string Title { get; set; }
+		public long ContentId { get; set; }
 
 		#endregion プロパティ
+
 	}
 }

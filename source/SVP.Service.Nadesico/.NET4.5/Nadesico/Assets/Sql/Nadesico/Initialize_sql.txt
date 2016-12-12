@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS [svp_FileMappingInfo]
 	[AclHash] TEXT NOT NULL,
 	[MappingFilePath] TEXT DEFAULT NULL,
 	[Mimetype] TEXT,
-	[LostFileFlag] INTEGER NOT NULL DEFAULT FALSE,
+	[LostFileFlag] BOOLEAN NOT NULL DEFAULT FALSE,
 	[Workspace_Id] INTEGER NOT NULL
 );
 
@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS [svp_Workspace]
 CREATE TABLE IF NOT EXISTS [svp_Content]
 (
 	[Id] INTEGER PRIMARY KEY AUTOINCREMENT,
+	[FileMappingInfo_Id] INTEGER,
 	[Title] TEXT NOT NULL,
 	[IdentifyKey] TEXT NOT NULL,
 	[ContentHash] TEXT,
@@ -58,7 +59,6 @@ CREATE TABLE IF NOT EXISTS [svp_Category]
 	[LastUpDate] DATE,
 	[SortType] INT NOT NULL DEFAULT 0,
 	[OrderType] INT NOT NULL DEFAULT 0,
-	[LastSelectedContent_Id] INT,
 	[ParentCategory_Id] INTEGER
 );
 
@@ -106,9 +106,9 @@ CREATE TABLE IF NOT EXISTS [svp_T_Label2Category]
 -- 
 
 ALTER TABLE [svp_Content] ADD [Starrating] INTEGER NOT NULL DEFAULT 0;
-ALTER TABLE [svp_Content] ADD [UnsetStarratingFlag] INTEGER NOT NULL DEFAULT TRUE;
-ALTER TABLE [svp_Content] ADD [ArchiveFlag] INTEGER NOT NULL DEFAULT FALSE;
-ALTER TABLE [svp_Content] ADD [ReadableFlag] INTEGER NOT NULL DEFAULT FALSE;
+ALTER TABLE [svp_Content] ADD [UnsetStarratingFlag] BOOLEAN NOT NULL DEFAULT TRUE;
+ALTER TABLE [svp_Content] ADD [ArchiveFlag] BOOLEAN NOT NULL DEFAULT FALSE;
+ALTER TABLE [svp_Content] ADD [ReadableFlag] BOOLEAN NOT NULL DEFAULT FALSE;
 
 --
 -- Initialize Data

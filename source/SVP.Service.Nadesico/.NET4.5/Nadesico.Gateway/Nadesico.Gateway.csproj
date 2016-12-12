@@ -93,6 +93,7 @@
   <ItemGroup>
     <Compile Include="AppDbContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ThumbnailDbContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Contribution\Akalib\.NET4.5\Akalib.Entity\Akalib.Entity.csproj">

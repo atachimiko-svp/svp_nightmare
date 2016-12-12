@@ -43,6 +43,9 @@ namespace SVP.CIL.Service
 		void Logout();
 
 		[OperationContract]
+		ResponseSendContentData SendContentData(RequestSendContentData reqparam);
+
+		[OperationContract]
 		ResponseTagCrud TagCrud(RequestTagCrud reqparam);
 
 		[OperationContract]
@@ -55,6 +58,5 @@ namespace SVP.CIL.Service
 		ResponseWorkspaceLoadList WorkspaceLoadList(RequestWorkspaceLoadList reqparam);
 
 		#endregion メソッド
-
 	}
 }

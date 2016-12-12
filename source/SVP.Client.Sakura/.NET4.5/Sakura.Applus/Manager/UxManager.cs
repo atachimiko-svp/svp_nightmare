@@ -13,7 +13,8 @@ namespace Sakura.Applus.Manager
 	public class UxManager : IUxManager
 	{
 
-		#region フィールド
+
+		#region Private フィールド
 
 		Perspective _CurrentPerspective = null;
 
@@ -21,10 +22,10 @@ namespace Sakura.Applus.Manager
 
 		List<PerspectiveViewModelBase> _ViewModels = new List<PerspectiveViewModelBase>();
 
-		#endregion フィールド
+		#endregion Private フィールド
 
 
-		#region コンストラクタ
+		#region Public コンストラクタ
 
 		public UxManager()
 		{
@@ -38,33 +39,33 @@ namespace Sakura.Applus.Manager
 
 			// パースペクティブ初期化
 			// 非表示にするものは、明示的にNULLを設定します。
-			var p1 = new Perspective("P1");
+			var p1 = new Perspective(Enum.GetName(typeof(PerspectiveNames), PerspectiveNames.ContentList_Thumbnail));
 			p1.PerspectiveVmDict.Add("Document", doc1);
 			p1.PerspectiveVmDict.Add("FL1", pane1);
 			p1.PerspectiveVmDict.Add("DockRight", null);
 			this._PerspectiveList.Add(p1);
 
-			var p2 = new Perspective("P2");
+			var p2 = new Perspective(Enum.GetName(typeof(PerspectiveNames), PerspectiveNames.Preview));
 			p2.PerspectiveVmDict.Add("Document", doc2);
 			p2.PerspectiveVmDict.Add("FL1", null);
-			p2.PerspectiveVmDict.Add("DockRight", pane1);
+			p2.PerspectiveVmDict.Add("DockRight", null);
 			this._PerspectiveList.Add(p2);
 		}
 
-		#endregion コンストラクタ
+		#endregion Public コンストラクタ
 
 
-		#region イベント
+		#region Public イベント
 
 		public event ActiveViewModelEventHandler OnActiveViewModel;
 		public event DeActiveViewModelEventHandler OnDeActiveViewModel;
 
-		#endregion イベント
+		#endregion Public イベント
 
 
-		#region メソッド
+		#region Public メソッド
 
-		public void ChangePerspective(string perspectiveName)
+		public void ChangePerspective(string perspectiveName, object param = null)
 		{
 			// Guard
 			var pers = GetPerspective(perspectiveName);
@@ -89,7 +90,8 @@ namespace Sakura.Applus.Manager
 			}
 
 			_CurrentPerspective = pers;
-			foreach (var pp in pers.PerspectiveVmDict) {
+			foreach (var pp in pers.PerspectiveVmDict)
+			{
 
 				if (pp.Value != null)
 				{
@@ -101,8 +103,17 @@ namespace Sakura.Applus.Manager
 			}
 
 			if (OnActiveViewModel != null)
-				OnActiveViewModel(perspectiveName);
+				OnActiveViewModel(new ActiveViewModelEventArgs
+				{
+					PerspectiveName = perspectiveName,
+					Param = param
+				});
 		}
+
+		#endregion Public メソッド
+
+
+		#region Private メソッド
 
 		Perspective GetPerspective(string perspectiveName)
 		{
@@ -112,7 +123,7 @@ namespace Sakura.Applus.Manager
 			return r.FirstOrDefault();
 		}
 
-		#endregion メソッド
+		#endregion Private メソッド
 
 	}
 }

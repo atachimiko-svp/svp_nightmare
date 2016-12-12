@@ -15,7 +15,7 @@ namespace Sakura.Contrib
 	/// <typeparam name="T"></typeparam>
 	/// <typeparam name="SV">サーバから取得するデータ型</typeparam>
 	public abstract class LazyDataSourceBase<T, SV> : IDataSource<DispatcherCollection<T>>, IDisposable
-		where T : ILazyLoadingItem<SV>, new()
+		where T : ILazyLoadingItem<SV>
 		where SV : new()
 	{
 

@@ -15,7 +15,7 @@ namespace Sakura.Data.ViewModel
 	{
 
 
-		#region フィールド
+		#region Private フィールド
 
 		static ILog LOG = LogManager.GetLogger(typeof(WorkspaceViewModel));
 
@@ -79,10 +79,10 @@ namespace Sakura.Data.ViewModel
 		/// </summary>
 		DataTemplate _ViewTemplate;
 
-		#endregion フィールド
+		#endregion Private フィールド
 
 
-		#region プロパティ
+		#region Public プロパティ
 
 		public SDocumentViewModelBase ActiveDocument
 		{
@@ -311,10 +311,10 @@ namespace Sakura.Data.ViewModel
 			}
 		}
 
-		#endregion プロパティ
+		#endregion Public プロパティ
 
 
-		#region メソッド
+		#region Public メソッド
 
 		public void AttachViewModel(string position, PerspectiveViewModelBase perspectiveVm)
 		{
@@ -358,17 +358,23 @@ namespace Sakura.Data.ViewModel
 
 		public void Perspective1()
 		{
-			StartPerspective("P1");
+			StartPerspective(PerspectiveNames.ContentList_Thumbnail);
 		}
 
 		public void Perspective2()
 		{
-			StartPerspective("P2");
+			StartPerspective(PerspectiveNames.Preview);
 		}
 
-		void StartPerspective(string perspectiveName)
+		#endregion Public メソッド
+
+
+		#region Private メソッド
+
+		void StartPerspective(PerspectiveNames perspectiveName)
 		{
-			ApplicationContext.Ux.ChangePerspective(perspectiveName);
+			var textName = Enum.GetName(typeof(PerspectiveNames), perspectiveName);
+			ApplicationContext.Ux.ChangePerspective(textName);
 		}
 
 		/// <summary>
@@ -509,7 +515,7 @@ namespace Sakura.Data.ViewModel
 			}
 		}
 
-		#endregion メソッド
+		#endregion Private メソッド
 
 	}
 }

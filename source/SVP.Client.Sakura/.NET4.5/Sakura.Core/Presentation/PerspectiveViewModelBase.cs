@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sakura.Core.Infrastructures;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,19 +11,19 @@ namespace Sakura.Core.Presentation
 	{
 
 
-		#region フィールド
+		#region Protected フィールド
 
 		protected string CurrentPerspectiveName = string.Empty;
 
-		#endregion フィールド
+		#endregion Protected フィールド
 
 
-		#region メソッド
+		#region Public メソッド
 
-		public void ActiveViewModel(string perspectiveName)
+		public void ActiveViewModel(ActiveViewModelEventArgs args)
 		{
-			OnActiveViewModel(perspectiveName);
-			this.CurrentPerspectiveName = perspectiveName;
+			OnActiveViewModel(args.PerspectiveName, args.Param);
+			this.CurrentPerspectiveName = args.PerspectiveName;
 		}
 
 		public void DeActiveViewModel(string perspectiveName)
@@ -31,15 +32,16 @@ namespace Sakura.Core.Presentation
 			this.CurrentPerspectiveName = string.Empty;
 		}
 
-		public abstract void OnActiveViewModel(string perspectiveName);
+		public abstract void OnActiveViewModel(string perspectiveName, object param);
 		public abstract void OnDeActiveViewModel(string perspectiveName);
 
-		public void StartPerspective(string perspectiveName)
+		public void StartPerspective(PerspectiveNames perspectiveName, object param = null)
 		{
-			ApplicationContext.Ux.ChangePerspective(perspectiveName);
+			var textName = Enum.GetName(typeof(PerspectiveNames), perspectiveName);
+			ApplicationContext.Ux.ChangePerspective(textName, param);
 		}
 
-		#endregion メソッド
+		#endregion Public メソッド
 
 	}
 }

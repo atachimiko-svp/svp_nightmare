@@ -8,6 +8,7 @@ using SVP.CIL.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.ServiceModel;
 using System.ServiceModel.Description;
 using System.Text;
@@ -56,6 +57,7 @@ namespace Nadesico.Standalone
 					RunContentTB1();
 					break;
 				case "srv1":
+					RunSocketServerTB1();
 					RunServiceTB1();
 					break;
 				case "cli1":
@@ -229,6 +231,9 @@ namespace Nadesico.Standalone
 
 			using (var dbc = new AppDbContext())
 			{
+				var catRepository = new CategoryRepository(dbc);
+				var cat = catRepository.Load(1L); // ROOT Category
+
 				var content = new ContentImage();
 				content.IdentifyKey = "aaaa";
 				content.Title = "コンテントテストA";
@@ -236,11 +241,22 @@ namespace Nadesico.Standalone
 				content.ReadableFlag = true;
 				content.Starrating = 3;
 				content.UnsetStarratingFlag = false;
+				content.Category = cat;
 
 				var repoContent = new ContentImageRepository(dbc);
 				repoContent.Add(content);
 
 				dbc.SaveChanges();
+			}
+
+			using (var dbc = new AppDbContext())
+			{
+				var repoContent = new ContentRepository(dbc);
+				var q = repoContent.FindByCategory(new Category { Id = 1L });
+				foreach (var c in q.ToList())
+				{
+					Console.WriteLine("Content[{0}] Title={1} ArchiveFlag={2}", c.Id, c.Title, c.ArchiveFlag);
+				}
 			}
 
 			Console.WriteLine("永続化が完了しました。");
@@ -323,7 +339,12 @@ namespace Nadesico.Standalone
 			}
 		}
 
-		#endregion メソッド
+		static void RunSocketServerTB1()
+		{
+			var s = new ContentTransportAwaitServer(new IPEndPoint(IPAddress.Loopback, 17001));
+			Task.Factory.StartNew(s.Run);
+		}
 
+		#endregion メソッド
 	}
 }

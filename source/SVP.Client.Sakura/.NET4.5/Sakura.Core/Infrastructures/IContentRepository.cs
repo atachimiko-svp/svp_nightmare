@@ -12,6 +12,7 @@ namespace Sakura.Core.Infrastructures
 	public interface IContentRepository
 	{
 
+
 		#region イベント
 
 		event ChangeSelectedItemEventHandler ChangeSelectedItem;
@@ -22,10 +23,17 @@ namespace Sakura.Core.Infrastructures
 		#region プロパティ
 
 		IReadOnlyCollection<IContentLazyItem> Items { get; }
+
 		IContentLazyItem SelectedItem { get; }
 
 		#endregion プロパティ
 
+
+		#region メソッド
+
+		Task<bool> LoadContentData(IContentLazyItem content);
+
+		#endregion メソッド
 	}
 
 	public class ChangeSelectedItemEventArgs : EventArgs

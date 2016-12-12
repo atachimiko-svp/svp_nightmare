@@ -1,11 +1,15 @@
-﻿using log4net;
+﻿using ImpromptuInterface;
+using log4net;
 using Sakura.Core;
+using Sakura.Core.Criteria;
 using Sakura.Core.Infrastructures;
 using Sakura.Core.Presentation;
+using Sakura.Data.Infrastructures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Controls;
@@ -15,9 +19,11 @@ namespace Sakura.Data.ViewModel
 {
 	public class ContentListViewModel : SDocumentViewModelBase
 	{
-		
+
 
 		#region フィールド
+
+		long _Criteria_CategoryId = 0L;
 
 		static ILog LOG = LogManager.GetLogger(typeof(ContentListViewModel));
 
@@ -59,10 +65,29 @@ namespace Sakura.Data.ViewModel
 			// メソッドは削除します。
 		}
 
-		public override void OnActiveViewModel(string perspectiveName)
+		/// <summary>
+		/// 項目実行
+		/// </summary>
+		public async void ItemExecute(IContentLazyItem item)
+		{
+			// EMPTY
+			LOG.InfoFormat("ItemExecute {0}",item.Title);
+
+			var p = new { Content = item };
+			StartPerspective(PerspectiveNames.Preview, p);
+		}
+
+		public override async void OnActiveViewModel(string perspectiveName, object param)
 		{
 			LOG.DebugFormat("Execute {0}", this.CurrentPerspectiveName);
 
+			if (param != null)
+			{
+				var myInterface = param.ActLike<IPerspectiveP1Arg>();
+				_Criteria_CategoryId = myInterface.CategoryId;
+
+				await RunStartServerDataLoad();
+			}
 		}
 
 		public override void OnDeActiveViewModel(string perspectiveName)
@@ -75,14 +100,27 @@ namespace Sakura.Data.ViewModel
 		/// </summary>
 		public async void StartServerDataLoad()
 		{
-			LOG.Info("Execute StartServerDataLoad");
-			this.Items = ApplicationContext.ContentRepository.Items;
+			LOG.InfoFormat("Execute StartServerDataLoad ContentId={0}", _Criteria_CategoryId);
+
+			// Guard
+			if (_Criteria_CategoryId == 0) return; // 対象カテゴリが未設定の場合、読み込みを行わない
+
+			await RunStartServerDataLoad();
 		}
+
 		protected override void Dispose(bool disposing)
 		{
 			base.Dispose(disposing);
 		}
 
+		private async Task RunStartServerDataLoad()
+		{
+			await ((ISearchContent)ApplicationContext.ContentRepository).ExecFindByCategory(new SVP.CIL.Domain.Category
+			{
+				Id = _Criteria_CategoryId
+			});
+			this.Items = ApplicationContext.ContentRepository.Items;
+		}
 		#endregion メソッド
 
 	}

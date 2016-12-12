@@ -98,7 +98,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationInterfaceService.cs" />
+    <Compile Include="ContentTransportAwaitServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServerBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

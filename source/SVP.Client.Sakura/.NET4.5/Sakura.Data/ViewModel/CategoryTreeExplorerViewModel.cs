@@ -9,7 +9,7 @@ namespace Sakura.Data.ViewModel
 {
 	public class CategoryTreeExplorerViewModel : PaneViewModelBase
 	{
-		public override void OnActiveViewModel(string perspectiveName)
+		public override void OnActiveViewModel(string perspectiveName, object param)
 		{
 			throw new NotImplementedException();
 		}

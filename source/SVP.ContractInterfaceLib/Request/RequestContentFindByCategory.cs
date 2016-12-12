@@ -15,6 +15,8 @@ namespace SVP.CIL.Request
 
 		public Category Category { get; set; }
 
+		public bool EnableThumbnailFlag { get; set; }
+
 		#endregion プロパティ
 
 	}
