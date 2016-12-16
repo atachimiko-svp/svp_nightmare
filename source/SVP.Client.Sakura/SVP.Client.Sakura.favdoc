@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<Favorites xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <folders>
+    <Folder>
+      <name>ApplicationContext</name>
+      <folders />
+      <favorites>
+        <Favorite>
+          <name>ApplicationContextImpl.cs</name>
+          <path>.NET4.5\Sakura\ApplicationContextImpl.cs</path>
+          <absolutePath>D:\Repository\SVP_nightmare\source\SVP.Client.Sakura\.NET4.5\Sakura\ApplicationContextImpl.cs</absolutePath>
+          <position>
+            <line>1</line>
+            <column>1</column>
+            <lineHash>Y7dQ1CBbjBTOvWTKtfyrY5DosTHn2/5N87rm2vMT7+Q=</lineHash>
+          </position>
+        </Favorite>
+        <Favorite>
+          <name>ApplicationContext.cs</name>
+          <path>.NET4.5\Sakura.Core\ApplicationContext.cs</path>
+          <absolutePath>D:\Repository\SVP_nightmare\source\SVP.Client.Sakura\.NET4.5\Sakura.Core\ApplicationContext.cs</absolutePath>
+          <position>
+            <line>1</line>
+            <column>1</column>
+            <lineHash>Rjbq+Xd5d8h88JFHa0XooXzs42AUm5ZSngbdS7gtSQA=</lineHash>
+          </position>
+        </Favorite>
+        <Favorite>
+          <name>IApplicationContext.cs</name>
+          <path>.NET4.5\Sakura.Core\Infrastructures\IApplicationContext.cs</path>
+          <absolutePath>D:\Repository\SVP_nightmare\source\SVP.Client.Sakura\.NET4.5\Sakura.Core\Infrastructures\IApplicationContext.cs</absolutePath>
+          <position>
+            <line>1</line>
+            <column>1</column>
+            <lineHash>Rjbq+Xd5d8h88JFHa0XooXzs42AUm5ZSngbdS7gtSQA=</lineHash>
+          </position>
+        </Favorite>
+      </favorites>
+    </Folder>
+  </folders>
+  <favorites />
+</Favorites>
