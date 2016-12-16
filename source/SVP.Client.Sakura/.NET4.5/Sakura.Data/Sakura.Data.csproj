@@ -78,6 +78,7 @@
     <Compile Include="Infrastructures\MDFViewModelBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Struction\LabelTreeItem.cs" />
+    <Compile Include="ViewModel\AttributeControl1PanelViewModel.cs" />
     <Compile Include="ViewModel\CategoryTreeExplorerViewModel.cs" />
     <Compile Include="ViewModel\ContentListViewModel.cs" />
     <Compile Include="ViewModel\ContentPreviewViewModel.cs" />

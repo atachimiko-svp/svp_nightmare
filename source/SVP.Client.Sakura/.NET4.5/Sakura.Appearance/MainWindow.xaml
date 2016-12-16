@@ -52,6 +52,11 @@
                             <sakuComp:LabelTreeExplorerDocument />
                         </Grid>
                     </DataTemplate>
+                    <DataTemplate x:Key="AttributeControl1PanelViewModel">
+                        <Grid>
+                            <sakuComp:AttributeControl1Panel />
+                        </Grid>
+                    </DataTemplate>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

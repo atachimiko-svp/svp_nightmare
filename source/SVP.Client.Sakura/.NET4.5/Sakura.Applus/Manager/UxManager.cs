@@ -32,22 +32,26 @@ namespace Sakura.Applus.Manager
 			var doc1 = new ContentListViewModel();
 			var doc2 = new ContentPreviewViewModel();
 			var pane1 = new LabelTreeExplorerViewModel();
+			var dock1 = new AttributeControl1PanelViewModel();
 
 			_ViewModels.Add(doc1);
 			_ViewModels.Add(doc2);
 			_ViewModels.Add(pane1);
+			_ViewModels.Add(dock1);
 
 			// パースペクティブ初期化
 			// 非表示にするものは、明示的にNULLを設定します。
 			var p1 = new Perspective(Enum.GetName(typeof(PerspectiveNames), PerspectiveNames.ContentList_Thumbnail));
 			p1.PerspectiveVmDict.Add("Document", doc1);
 			p1.PerspectiveVmDict.Add("FL1", pane1);
+			p1.PerspectiveVmDict.Add("DockLeft", dock1);
 			p1.PerspectiveVmDict.Add("DockRight", null);
 			this._PerspectiveList.Add(p1);
 
 			var p2 = new Perspective(Enum.GetName(typeof(PerspectiveNames), PerspectiveNames.Preview));
 			p2.PerspectiveVmDict.Add("Document", doc2);
 			p2.PerspectiveVmDict.Add("FL1", null);
+			p2.PerspectiveVmDict.Add("DockLeft", null);
 			p2.PerspectiveVmDict.Add("DockRight", null);
 			this._PerspectiveList.Add(p2);
 		}
